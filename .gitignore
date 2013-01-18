@@ -1,0 +1,12 @@
+target
+generated-source
+
+*.class
+*.log
+*.update
+*.versionsBackup
+*.orig
+
+Thumbs.db
+desktop.ini
+
