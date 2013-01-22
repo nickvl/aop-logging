@@ -35,10 +35,10 @@ abstract class LogStrategy {
      *
      * @param logger current logger
      * @param method method name
-     * @param argCount parameter count number of the method
-     * @param logArg argument description
+     * @param args arguments of the method
+     * @param argumentDescriptor argument descriptor
      */
-    public abstract void logBefore(Log logger, String method, int argCount, ArgumentDescriptor logArg);
+    public abstract void logBefore(Log logger, String method, Object[] args, ArgumentDescriptor argumentDescriptor);
 
     /**
      * Logs returning from the method.
@@ -76,8 +76,8 @@ abstract class LogStrategy {
         }
 
         @Override
-        public void logBefore(Log logger, String method, int argCount, ArgumentDescriptor logArg) {
-            logger.fatal(getLogAdapter().toMessage(method, argCount, logArg.getValues(), logArg.getNames()));
+        public void logBefore(Log logger, String method, Object[] args, ArgumentDescriptor argumentDescriptor) {
+            logger.fatal(getLogAdapter().toMessage(method, args, argumentDescriptor));
         }
 
         @Override
@@ -110,8 +110,8 @@ abstract class LogStrategy {
         }
 
         @Override
-        public void logBefore(Log logger, String method, int argCount, ArgumentDescriptor logArg) {
-            logger.error(getLogAdapter().toMessage(method, argCount, logArg.getValues(), logArg.getNames()));
+        public void logBefore(Log logger, String method, Object[] args, ArgumentDescriptor argumentDescriptor) {
+            logger.error(getLogAdapter().toMessage(method, args, argumentDescriptor));
         }
 
         @Override
@@ -145,8 +145,8 @@ abstract class LogStrategy {
         }
 
         @Override
-        public void logBefore(Log logger, String method, int argCount, ArgumentDescriptor logArg) {
-            logger.warn(getLogAdapter().toMessage(method, argCount, logArg.getValues(), logArg.getNames()));
+        public void logBefore(Log logger, String method, Object[] args, ArgumentDescriptor argumentDescriptor) {
+            logger.warn(getLogAdapter().toMessage(method, args, argumentDescriptor));
         }
 
         @Override
@@ -180,8 +180,8 @@ abstract class LogStrategy {
         }
 
         @Override
-        public void logBefore(Log logger, String method, int argCount, ArgumentDescriptor logArg) {
-            logger.info(getLogAdapter().toMessage(method, argCount, logArg.getValues(), logArg.getNames()));
+        public void logBefore(Log logger, String method, Object[] args, ArgumentDescriptor argumentDescriptor) {
+            logger.info(getLogAdapter().toMessage(method, args, argumentDescriptor));
         }
 
         @Override
@@ -215,8 +215,8 @@ abstract class LogStrategy {
         }
 
         @Override
-        public void logBefore(Log logger, String method, int argCount, ArgumentDescriptor logArg) {
-            logger.debug(getLogAdapter().toMessage(method, argCount, logArg.getValues(), logArg.getNames()));
+        public void logBefore(Log logger, String method, Object[] args, ArgumentDescriptor argumentDescriptor) {
+            logger.debug(getLogAdapter().toMessage(method, args, argumentDescriptor));
         }
 
         @Override
@@ -250,8 +250,8 @@ abstract class LogStrategy {
         }
 
         @Override
-        public void logBefore(Log logger, String method, int argCount, ArgumentDescriptor logArg) {
-            logger.trace(getLogAdapter().toMessage(method, argCount, logArg.getValues(), logArg.getNames()));
+        public void logBefore(Log logger, String method, Object[] args, ArgumentDescriptor argumentDescriptor) {
+            logger.trace(getLogAdapter().toMessage(method, args, argumentDescriptor));
         }
 
         @Override

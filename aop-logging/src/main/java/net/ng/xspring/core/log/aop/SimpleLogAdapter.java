@@ -28,16 +28,31 @@ public class SimpleLogAdapter implements LogAdapter {
     }
 
     @Override
-    public Object toMessage(String method, int argCount, Object[] arg, Object[] argNames) {
-        if (argCount == 0) {
+    public Object toMessage(String method, Object[] args, ArgumentDescriptor argumentDescriptor) {
+        if (args.length == 0) {
             return CALLING + method + "()";
-        } else if (argCount == 1) {
-            return CALLING + method + '(' + argNames[0] + '=' + arg[0] + ')';
+        } else if (args.length == 1) {
+            return CALLING + method + '(' + argumentDescriptor.getNames()[0] + '=' + args[0] + ')';
         }
-        StringBuilder buff = new StringBuilder(CALLING).append(method).append('(').append(argCount).append(" arguments: ");
-        for (int i = 0; i < argNames.length; i++) {
-            buff.append(argNames[i]).append('=').append(arg[i]);
+        StringBuilder buff = new StringBuilder(CALLING).append(method).append('(').append(args.length).append(" arguments: ");
+        for (int i = 0; i < args.length; i++) {
+            if (argumentDescriptor.isArgumentIndex(i)) {
+                buff.append(argumentDescriptor.getNames()[i]).append('=').append(args[i]);
+            }
         }
+/*
+            Object[] lpArgs = new Object[lpParameters.cardinality()];
+            String[] lpArgNames = argNames == null ? null : new String[lpArgs.length];
+            int logArgIndex = 0;
+            for (int i = lpParameters.nextSetBit(0); i >= 0; i = lpParameters.nextSetBit(i + 1)) {
+                lpArgs[logArgIndex] = arguments[i];
+                if (lpArgNames != null) {
+                    lpArgNames[logArgIndex] = argNames[i];
+                }
+                logArgIndex++;
+            }
+            return new ArgumentDescriptor(loggedValueIndexes, lpArgNames);
+*/
         buff.append(')');
         return buff.toString();
     }

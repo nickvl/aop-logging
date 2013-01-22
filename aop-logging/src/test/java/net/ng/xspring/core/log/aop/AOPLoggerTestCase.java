@@ -7,12 +7,10 @@ package net.ng.xspring.core.log.aop;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Comparator;
 
 import org.apache.commons.logging.Log;
+import org.easymock.Capture;
 import org.easymock.EasyMock;
-import org.easymock.LogicalOperator;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,10 +20,14 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import static net.ng.xspring.core.log.aop.TestSupportUtility.arrayEqual;
 import static org.easymock.EasyMock.aryEq;
+import static org.easymock.EasyMock.capture;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.isNull;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 /**
@@ -35,14 +37,6 @@ import static org.junit.Assert.fail;
 @ContextConfiguration("AOPLoggerTestCase-context.xml")
 @DirtiesContext
 public class AOPLoggerTestCase {
-
-    private static final Comparator<Object[]> ARRAY_EQUAL_COMPARATOR = new Comparator<Object[]>() {
-        @Override
-        public int compare(Object[] o1, Object[] o2) {
-            Assert.assertArrayEquals(o1, o2);
-            return 0;
-        }
-    };
 
     @Autowired
     private AOPLogger aspect;
@@ -69,7 +63,8 @@ public class AOPLoggerTestCase {
     @Test
     public void testLogDebugBothVoidMethodZero() throws Exception {
         EasyMock.expect(logAdapter.getLog(SimpleFooService.class)).andReturn(logger);
-        EasyMock.expect(logAdapter.toMessage(eq("voidMethodZero"), eq(0), aryEq(new Object[]{}), EasyMock.<Object[]>isNull())).andReturn(">");
+        Capture<ArgumentDescriptor> captured = new Capture<ArgumentDescriptor>();
+        EasyMock.expect(logAdapter.toMessage(eq("voidMethodZero"), aryEq(new Object[]{}), capture(captured))).andReturn(">");
         EasyMock.expect(logAdapter.toMessage(eq("voidMethodZero"), eq(0), isNull())).andReturn("<");
 
         EasyMock.expect(logger.isDebugEnabled()).andReturn(true);
@@ -78,13 +73,16 @@ public class AOPLoggerTestCase {
         logger.debug("<");
         EasyMock.replay(logAdapter, logger);
         whoFooService.voidMethodZero();
+        assertNull(captured.getValue().getNames());
+        assertEquals(-1, captured.getValue().nextArgumentIndex(0));
         EasyMock.verify(logAdapter, logger);
     }
 
     @Test
     public void testLogDebugBothStringMethodTwoLp() throws Exception {
         EasyMock.expect(logAdapter.getLog(SimpleFooService.class)).andReturn(logger);
-        EasyMock.expect(logAdapter.toMessage(eq("stringMethodTwo"), eq(2), aryEq(new Object[]{"@2"}), aryEq(new Object[]{"second"}))).andReturn(">");
+        Capture<ArgumentDescriptor> captured = new Capture<ArgumentDescriptor>();
+        EasyMock.expect(logAdapter.toMessage(eq("stringMethodTwo"), aryEq(new Object[]{"@1", "@2"}), capture(captured))).andReturn(">");
         EasyMock.expect(logAdapter.toMessage(eq("stringMethodTwo"), eq(2), eq("stringMethodTwo:@1:@2"))).andReturn("<");
         EasyMock.expect(logger.isDebugEnabled()).andReturn(true);
         logger.debug(">");
@@ -93,13 +91,18 @@ public class AOPLoggerTestCase {
         EasyMock.replay(logAdapter, logger);
         String res = whoFooService.stringMethodTwo("@1", "@2");
         assertEquals("stringMethodTwo:@1:@2", res);
+        assertArrayEquals(new String[]{"first", "second"}, captured.getValue().getNames());
+        assertEquals(1, captured.getValue().nextArgumentIndex(0));
+        assertEquals(1, captured.getValue().nextArgumentIndex(1));
+        assertEquals(-1, captured.getValue().nextArgumentIndex(2));
         EasyMock.verify(logAdapter, logger);
     }
 
     @Test
     public void testLogDebugBothStringMethodThreeAll() throws Exception {
         EasyMock.expect(logAdapter.getLog(SimpleFooService.class)).andReturn(logger);
-        EasyMock.expect(logAdapter.toMessage(eq("stringMethodThree"), eq(3), aryEq(new Object[]{"@1", "@2", "@3"}), aryEq(new Object[]{"first", "second", "third"}))).andReturn(">");
+        Capture<ArgumentDescriptor> captured = new Capture<ArgumentDescriptor>();
+        EasyMock.expect(logAdapter.toMessage(eq("stringMethodThree"), aryEq(new Object[]{"@1", "@2", "@3"}), capture(captured))).andReturn(">");
         EasyMock.expect(logAdapter.toMessage(eq("stringMethodThree"), eq(3), eq("stringMethodThree:@1:@2:@3"))).andReturn("<");
         EasyMock.expect(logger.isDebugEnabled()).andReturn(true);
         logger.debug(">");
@@ -108,6 +111,11 @@ public class AOPLoggerTestCase {
         EasyMock.replay(logAdapter, logger);
         String res = whoFooService.stringMethodThree("@1", "@2", "@3");
         assertEquals("stringMethodThree:@1:@2:@3", res);
+        assertArrayEquals(new String[]{"first", "second", "third"}, captured.getValue().getNames());
+        assertEquals(0, captured.getValue().nextArgumentIndex(0));
+        assertEquals(1, captured.getValue().nextArgumentIndex(1));
+        assertEquals(2, captured.getValue().nextArgumentIndex(2));
+        assertEquals(-1, captured.getValue().nextArgumentIndex(3));
         EasyMock.verify(logAdapter, logger);
     }
 
@@ -115,7 +123,8 @@ public class AOPLoggerTestCase {
     public void testLogTraceBothStringMethodTwoVarargsLp() throws Exception {
         EasyMock.expect(logAdapter.getLog(SimpleFooService.class)).andReturn(logger);
         String[] secondArgValue = {"@2-1", "@2-2"};
-        EasyMock.expect(logAdapter.toMessage(eq("stringMethodTwoVarargs"), eq(2), arrayEqual(secondArgValue), aryEq(new Object[]{"second"}))).andReturn(">");
+        Capture<ArgumentDescriptor> captured = new Capture<ArgumentDescriptor>();
+        EasyMock.expect(logAdapter.toMessage(eq("stringMethodTwoVarargs"), arrayEqual(new Object[]{"@1", new String[]{"@2-1", "@2-2"}}), capture(captured))).andReturn(">");
         EasyMock.expect(logAdapter.toMessage(eq("stringMethodTwoVarargs"), eq(2), eq("stringMethodTwoVarargs:@1:" + Arrays.toString(secondArgValue)))).andReturn("<");
         EasyMock.expect(logger.isTraceEnabled()).andReturn(true);
         logger.trace(">");
@@ -124,13 +133,19 @@ public class AOPLoggerTestCase {
         EasyMock.replay(logAdapter, logger);
         String res = whoFooService.stringMethodTwoVarargs("@1", "@2-1", "@2-2");
         assertEquals("stringMethodTwoVarargs:@1:" + Arrays.toString(secondArgValue), res);
+        assertArrayEquals(new String[]{"first", "second"}, captured.getValue().getNames());
+        assertEquals(1, captured.getValue().nextArgumentIndex(0));
+        assertEquals(1, captured.getValue().nextArgumentIndex(1));
+        assertEquals(-1, captured.getValue().nextArgumentIndex(2));
+
         EasyMock.verify(logAdapter, logger);
     }
 
     @Test
     public void testLogDebugBothVoidExcMethodZero() throws Exception {
         EasyMock.expect(logAdapter.getLog(SimpleFooService.class)).andReturn(logger);
-        EasyMock.expect(logAdapter.toMessage(eq("voidExcMethodZero"), eq(0), aryEq(new Object[]{}), EasyMock.<Object[]>isNull())).andReturn(">");
+        Capture<ArgumentDescriptor> captured = new Capture<ArgumentDescriptor>();
+        EasyMock.expect(logAdapter.toMessage(eq("voidExcMethodZero"), aryEq(new Object[]{}), capture(captured))).andReturn(">");
         EasyMock.expect(logAdapter.toMessage(eq("voidExcMethodZero"), eq(0), EasyMock.anyObject(IOException.class), eq(false))).andReturn("io thrown");
 
         EasyMock.expect(logger.isDebugEnabled()).andReturn(true);
@@ -144,11 +159,9 @@ public class AOPLoggerTestCase {
         } catch (IOException e) {
             assertEquals("io fail", e.getMessage());
         }
+        assertNull(captured.getValue().getNames());
+        assertEquals(-1, captured.getValue().nextArgumentIndex(0));
         EasyMock.verify(logAdapter, logger);
-    }
-
-    private Object[] arrayEqual(String[] expectedArray) {
-        return EasyMock.cmp(new Object[]{expectedArray}, ARRAY_EQUAL_COMPARATOR, LogicalOperator.EQUAL);
     }
 
 }

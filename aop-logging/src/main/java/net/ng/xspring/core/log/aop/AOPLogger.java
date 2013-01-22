@@ -70,8 +70,8 @@ public class AOPLogger implements InitializingBean {
         String methodName = joinPoint.getSignature().getName(); // TODO could be optimized
 
         if (beforeLoggingOn(invocationDescriptor, logger)) {
-            ArgumentDescriptor argumentDescriptor = new ArgumentDescriptor.Builder(method, args, localVariableNameDiscoverer).build();
-            logStrategies.get(invocationDescriptor.getBeforeSeverity()).logBefore(logger, methodName, args.length, argumentDescriptor);
+            ArgumentDescriptor argumentDescriptor = new ArgumentDescriptor.Builder(method, args.length, localVariableNameDiscoverer).build();
+            logStrategies.get(invocationDescriptor.getBeforeSeverity()).logBefore(logger, methodName, args, argumentDescriptor);
         }
 
         Object result;

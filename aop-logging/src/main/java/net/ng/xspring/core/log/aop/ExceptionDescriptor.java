@@ -66,7 +66,7 @@ final class ExceptionDescriptor {
                 for (Class<? extends Exception> clazz : exceptions.value()) {
                     ExceptionSeverity descriptor = map.get(clazz);
                     if (descriptor == null || Helper.greater(targetSeverity, descriptor.getSeverity())) {
-                        map.put(clazz, new ExceptionSeverity(targetSeverity, exceptions.stacktrace()));
+                        map.put(clazz, ExceptionSeverity.create(targetSeverity, exceptions.stacktrace()));
                     }
                 }
             }

@@ -6,8 +6,8 @@
 package net.ng.xspring.core.log.aop.benchmark;
 
 import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
-import net.ng.xspring.core.log.aop.DummyLogAdapter;
 import net.ng.xspring.core.log.aop.annotation.LogError;
 import net.ng.xspring.core.log.aop.annotation.LogTrace;
 import net.ng.xspring.core.log.aop.annotation.Lp;
@@ -16,7 +16,7 @@ import net.ng.xspring.core.log.aop.annotation.Lp;
  */
 @LogTrace
 public class LoggableServiceImpl implements LoggableService {
-    private static Log LOGGER = new DummyLogAdapter.DummyLog();
+    private static Log LOGGER = LogFactory.getLog(LoggableServiceImpl.class);
 
     @Override
     public int logClearMethod(String a, int b) {

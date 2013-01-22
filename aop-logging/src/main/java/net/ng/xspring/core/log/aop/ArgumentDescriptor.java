@@ -17,18 +17,27 @@ import net.ng.xspring.core.log.aop.annotation.Lp;
  * Method arguments descriptor.
  */
 final class ArgumentDescriptor {
-    private final Object[] values;
+    private final BitSet loggedValueIndexes;
     private final String[] names;
 
-    private ArgumentDescriptor(Object[] values, String[] names) {
-        this.values = values;
+    private ArgumentDescriptor(BitSet loggedValueIndexes, String[] names) {
+        this.loggedValueIndexes = loggedValueIndexes;
         this.names = names;
     }
 
-    public Object[] getValues() {
-        return values;
+    public int nextArgumentIndex(int i) {
+        return loggedValueIndexes.nextSetBit(i);
     }
 
+    public boolean isArgumentIndex(int i) {
+        return loggedValueIndexes.get(i);
+    }
+
+    /**
+     * Gets names of method parameters.
+     *
+     * @return all parameter names or <code>null</code> if the method has no parameters or the names can not be discovered
+     */
     public String[] getNames() {
         return names;
     }
@@ -37,41 +46,32 @@ final class ArgumentDescriptor {
      * Builder.
      */
     public static final class Builder {
-        private final Object[] arguments;
+        private static final ArgumentDescriptor NO_ARGUMENTS_DESCRIPTOR = new ArgumentDescriptor(new BitSet(0), null);
         private final Method method;
+        private final int argumentCount;
         private final ParameterNameDiscoverer parameterNameDiscoverer;
 
-        public Builder(Method method, Object[] arguments, ParameterNameDiscoverer parameterNameDiscoverer) {
+        public Builder(Method method, int argumentCount, ParameterNameDiscoverer parameterNameDiscoverer) {
             this.method = method;
-            this.arguments = arguments;
+            this.argumentCount = argumentCount;
             this.parameterNameDiscoverer = parameterNameDiscoverer;
         }
 
         public ArgumentDescriptor build() {
-            if (arguments.length == 0) {
-                return new ArgumentDescriptor(arguments, null);
+            if (argumentCount == 0) {
+                return NO_ARGUMENTS_DESCRIPTOR;
             }
             String[] argNames = parameterNameDiscoverer.getParameterNames(method);
 
             BitSet lpParameters = getMethodParameters(Lp.class);
             if (lpParameters.isEmpty()) {
-                return new ArgumentDescriptor(arguments, argNames);
+                lpParameters.set(0, argumentCount);
             }
-            Object[] lpArgs = new Object[lpParameters.cardinality()];
-            String[] lpArgNames = argNames == null ? null : new String[lpArgs.length];
-            int logArgIndex = 0;
-            for (int i = lpParameters.nextSetBit(0); i >= 0; i = lpParameters.nextSetBit(i + 1)) {
-                lpArgs[logArgIndex] = arguments[i];
-                if (lpArgNames != null) {
-                    lpArgNames[logArgIndex] = argNames[i];
-                }
-                logArgIndex++;
-            }
-            return new ArgumentDescriptor(lpArgs, lpArgNames);
+
+            return new ArgumentDescriptor(lpParameters, argNames);
         }
 
         private <T> BitSet getMethodParameters(Class<T> annotationMarker) {
-            // TODO extract this independent result to make it cacheable
             Annotation[][] annotations = method.getParameterAnnotations();
             BitSet result = new BitSet(annotations.length);
             for (int i = 0; i < annotations.length; i++) {

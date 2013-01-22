@@ -6,7 +6,7 @@
 package net.ng.xspring.core.log.aop;
 
 /**
- * Log level severities.
+ * Log level severity enumeration in acceding order.
  */
 enum Severity {
     TRACE,
