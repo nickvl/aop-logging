@@ -24,7 +24,6 @@ import static net.ng.xspring.core.log.aop.TestSupportUtility.arrayEqual;
 import static org.easymock.EasyMock.aryEq;
 import static org.easymock.EasyMock.capture;
 import static org.easymock.EasyMock.eq;
-import static org.easymock.EasyMock.isNull;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -65,7 +64,7 @@ public class AOPLoggerTestCase {
         EasyMock.expect(logAdapter.getLog(SimpleFooService.class)).andReturn(logger);
         Capture<ArgumentDescriptor> captured = new Capture<ArgumentDescriptor>();
         EasyMock.expect(logAdapter.toMessage(eq("voidMethodZero"), aryEq(new Object[]{}), capture(captured))).andReturn(">");
-        EasyMock.expect(logAdapter.toMessage(eq("voidMethodZero"), eq(0), isNull())).andReturn("<");
+        EasyMock.expect(logAdapter.toMessage(eq("voidMethodZero"), eq(0), eq(Void.TYPE))).andReturn("<");
 
         EasyMock.expect(logger.isDebugEnabled()).andReturn(true);
         logger.debug(">");
