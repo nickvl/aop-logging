@@ -38,7 +38,11 @@ public class SimpleLogAdapter implements LogAdapter {
         for (int i = 0; i < args.length; i++) {
             if (argumentDescriptor.isArgumentIndex(i)) {
                 buff.append(argumentDescriptor.getNames()[i]).append('=').append(args[i]);
+                buff.append(", ");
             }
+        }
+        if (argumentDescriptor.nextArgumentIndex(0) != -1) {
+            buff.setLength(buff.length() - 2);
         }
 /*
             Object[] lpArgs = new Object[lpParameters.cardinality()];
