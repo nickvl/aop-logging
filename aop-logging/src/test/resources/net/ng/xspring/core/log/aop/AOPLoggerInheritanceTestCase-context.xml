@@ -9,6 +9,6 @@
     <aop:aspectj-autoproxy/>
 
     <bean class="net.ng.xspring.core.log.aop.AOPLogger"/>
-    <bean class="net.ng.xspring.core.log.aop.benchmark.LoggableServiceImpl"/>
+    <bean class="net.ng.xspring.core.log.aop.service.SimpleBarService"/>
 
 </beans>

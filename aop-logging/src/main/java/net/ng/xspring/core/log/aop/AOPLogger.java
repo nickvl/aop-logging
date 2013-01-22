@@ -102,7 +102,6 @@ public class AOPLogger implements InitializingBean {
     private Method extractMethod(ProceedingJoinPoint joinPoint) throws NoSuchMethodException {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         // signature.getMethod() points to method declared in interface. it is not suit to discover arg names and arg annotations
-        // TODO check if it works with several aspects:
         // see AopProxyUtils: org.springframework.cache.interceptor.CacheAspectSupport#execute(CacheAspectSupport.Invoker, Object, Method, Object[])
         return joinPoint.getTarget().getClass().getMethod(signature.getName(), signature.getParameterTypes());
     }

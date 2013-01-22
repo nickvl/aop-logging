@@ -3,7 +3,7 @@
  *   Some Rights Reserved.
  ************************************************************************************/
 
-package net.ng.xspring.core.log.aop;
+package net.ng.xspring.core.log.aop.service;
 
 import java.io.IOException;
 

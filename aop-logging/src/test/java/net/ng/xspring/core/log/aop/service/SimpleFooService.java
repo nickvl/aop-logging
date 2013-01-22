@@ -3,7 +3,7 @@
  *   Some Rights Reserved.
  ************************************************************************************/
 
-package net.ng.xspring.core.log.aop;
+package net.ng.xspring.core.log.aop.service;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -21,7 +21,7 @@ import static net.ng.xspring.core.log.aop.annotation.LogException.Exc;
 /**
  * Simple service.
  */
-@Service("simpleFooService")
+@Service
 public class SimpleFooService implements FooService {
 
     @LogDebug
