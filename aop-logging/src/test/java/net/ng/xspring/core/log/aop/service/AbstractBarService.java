@@ -25,6 +25,7 @@ public abstract class AbstractBarService implements BarService {
         // should be overridden
     }
 
+    @LogInfo
     @Override
     public void overriddenLogInAbstractOnly(String aFirst, String aSecond) {
         // should be overridden

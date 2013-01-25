@@ -6,6 +6,7 @@
 package net.ng.xspring.core.log.aop.benchmark;
 
 /**
+ * Service which methods performs different logging strategies.
  */
 public interface LoggableService {
 

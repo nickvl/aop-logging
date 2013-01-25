@@ -8,16 +8,16 @@ package net.ng.xspring.core.log.aop.service;
 import net.ng.xspring.core.log.aop.annotation.LogWarn;
 
 /**
- * Service interface.
+ * Bar service interface.
  */
 public interface BarService {
 
     @LogWarn
-    void inSimpleLogInSuperOnly(String iFirst, String iSecond);
+    void inExtendedLogInSuperOnly(String iFirst, String iSecond);
 
     void inAbstract(String iFirst, String iSecond);
 
-    void inSimple(String iFirst, String iSecond);
+    void inExtended(String iFirst, String iSecond);
 
     void overridden(String iFirst, String iSecond);
 

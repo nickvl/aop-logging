@@ -15,7 +15,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -32,7 +31,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 /**
- * Test.
+ * Tests checks logging annotation parameters.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("AOPLoggerTestCase-context.xml")
@@ -43,7 +42,6 @@ public class AOPLoggerTestCase {
     private AOPLogger aspect;
 
     @Autowired
-    @Qualifier("simpleFooService")
     private FooService fooService;
 
     private LogAdapter logAdapter;
@@ -66,11 +64,18 @@ public class AOPLoggerTestCase {
 
         EasyMock.expect(logger.isDebugEnabled()).andReturn(true);
         logger.debug(">");
-        EasyMock.expect(logger.isDebugEnabled()).andReturn(true);
-        logger.debug("<");
+        EasyMock.expect(logger.isTraceEnabled()).andReturn(true);
+        logger.trace("<");
         EasyMock.replay(logAdapter, logger);
         fooService.voidMethodZero();
         assertParams(captured.getValue(), null);
+        EasyMock.verify(logAdapter, logger);
+    }
+
+    @Test
+    public void testLogDebugBothVoidMethodOne() throws Exception {
+        EasyMock.replay(logAdapter, logger);
+        fooService.stringMethodOne("@1");
         EasyMock.verify(logAdapter, logger);
     }
 

@@ -16,10 +16,6 @@ public interface FooService {
 
     void voidMethodZero();
 
-    void voidMethodOne(String first);
-
-    String stringMethodZero();
-
     String stringMethodOne(String first);
 
     String stringMethodTwo(String first, String second);

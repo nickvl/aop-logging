@@ -63,7 +63,6 @@ public class SimpleLogAdapter implements LogAdapter {
 
     @Override
     public Object toMessage(String method, int argCount, Object result) {
-        // TODO handel void result
         if (argCount == 0) {
             return RETURNING + method + "():" + String.valueOf(result);
         }

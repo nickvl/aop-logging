@@ -19,31 +19,18 @@ import net.ng.xspring.core.log.aop.annotation.Lp;
 import static net.ng.xspring.core.log.aop.annotation.LogException.Exc;
 
 /**
- * Simple service.
+ * Simple service, implementation of {@link FooService}.
  */
 @Service
 public class SimpleFooService implements FooService {
 
-    @LogDebug
+    @LogDebug(LogPoint.IN)
     @LogTrace
     @Override
     public void voidMethodZero() {
         // nothing to do
     }
 
-    @LogDebug(LogPoint.OUT)
-    @Override
-    public void voidMethodOne(String first) {
-        // nothing to do
-    }
-
-    @LogDebug
-    @Override
-    public String stringMethodZero() {
-        return "stringMethodZero:";
-    }
-
-    @LogDebug
     @Override
     public String stringMethodOne(String first) {
         return "stringMethodOne:" + first;

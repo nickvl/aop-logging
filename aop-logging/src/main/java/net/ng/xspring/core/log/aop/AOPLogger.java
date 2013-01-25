@@ -55,11 +55,10 @@ public class AOPLogger implements InitializingBean {
      * @throws Throwable in case of exception
      */
     @Around(value = "execution(@(@net.ng.xspring.core.log.aop.annotation.Logging *) * *.* (..))" // per method
-            + " || execution(* @(@net.ng.xspring.core.log.aop.annotation.Logging *) * .*(..))"   // per class
+            + " || execution(* (@(@net.ng.xspring.core.log.aop.annotation.Logging *) *).*(..))"  // per class
             , argNames = "joinPoint")
     public Object logTheMethod(ProceedingJoinPoint joinPoint) throws Throwable {
         // TODO if toStringOverridden, big list and array
-        // TODO varArgs test
 
         Object[] args = joinPoint.getArgs();
         Log logger = logAdapter.getLog(joinPoint.getTarget().getClass());

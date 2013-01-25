@@ -9,6 +9,7 @@
     <aop:aspectj-autoproxy/>
 
     <bean class="net.ng.xspring.core.log.aop.AOPLogger"/>
-    <bean class="net.ng.xspring.core.log.aop.service.ExtendedBarService"/>
+    <bean id="generalBaz" class="net.ng.xspring.core.log.aop.service.GeneralBazService"/>
+    <bean id="auxBaz" class="net.ng.xspring.core.log.aop.service.AuxBazService"/>
 
 </beans>

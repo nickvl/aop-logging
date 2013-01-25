@@ -57,10 +57,6 @@ public final class TestSupportUtility {
         assertTrue(EqualsBuilder.reflectionEquals(expected, actual));
     }
 
-    public static Object[] arrayEqual(String[] expectedArray) {
-        return EasyMock.cmp(new Object[]{expectedArray}, ARRAY_EQUAL_COMPARATOR, LogicalOperator.EQUAL);
-    }
-
     public static Object[] arrayEqual(Object[] expectedArray) {
         return EasyMock.cmp(expectedArray, ARRAY_EQUAL_COMPARATOR, LogicalOperator.EQUAL);
     }

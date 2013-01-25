@@ -17,7 +17,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import net.ng.xspring.core.log.aop.service.BarService;
-import net.ng.xspring.core.log.aop.service.SimpleBarService;
+import net.ng.xspring.core.log.aop.service.ExtendedBarService;
 
 import static org.easymock.EasyMock.aryEq;
 import static org.easymock.EasyMock.capture;
@@ -26,7 +26,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Test.
+ * Tests check log configuration on an extended class.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("AOPLoggerInheritanceTestCase-context.xml")
@@ -34,7 +34,7 @@ import static org.junit.Assert.assertEquals;
 public class AOPLoggerInheritanceTestCase {
 
     private static final String[] A_PARAM_NAMES = new String[]{"aFirst", "aSecond"};
-    private static final String[] S_PARAM_NAMES = new String[]{"sFirst", "sSecond"};
+    private static final String[] E_PARAM_NAMES = new String[]{"eFirst", "eSecond"};
     private static final Object[] PARAM_VALUE = new Object[]{"@1", "@2"};
     @Autowired
     private AOPLogger aspect;
@@ -53,8 +53,8 @@ public class AOPLoggerInheritanceTestCase {
         aspect.afterPropertiesSet();
     }
 
-    private void expectSimpleBarServiceLogger() {
-        EasyMock.expect(logAdapter.getLog(SimpleBarService.class)).andReturn(logger);
+    private void expectExtendedBarServiceLogger() {
+        EasyMock.expect(logAdapter.getLog(ExtendedBarService.class)).andReturn(logger);
     }
 
     private void expectInfoLogging() {
@@ -78,15 +78,15 @@ public class AOPLoggerInheritanceTestCase {
     }
 
     @Test
-    public void testInSimpleLogInSuperOnly() throws Exception {
+    public void testInExtendedLogInSuperOnly() throws Exception {
         EasyMock.replay(logAdapter, logger);
-        barService.inSimpleLogInSuperOnly("@1", "@2");
+        barService.inExtendedLogInSuperOnly("@1", "@2");
         EasyMock.verify(logAdapter, logger);
     }
 
     @Test
     public void testInAbstract() throws Exception {
-        expectSimpleBarServiceLogger();
+        expectExtendedBarServiceLogger();
         Capture<ArgumentDescriptor> captured = new Capture<ArgumentDescriptor>();
         EasyMock.expect(logAdapter.toMessage(eq("inAbstract"), aryEq(PARAM_VALUE), capture(captured))).andReturn(">");
         EasyMock.expect(logAdapter.toMessage("inAbstract", 2, Void.TYPE)).andReturn("<");
@@ -100,23 +100,23 @@ public class AOPLoggerInheritanceTestCase {
     }
 
     @Test
-    public void testInSimple() throws Exception {
-        expectSimpleBarServiceLogger();
+    public void testInExtended() throws Exception {
+        expectExtendedBarServiceLogger();
         Capture<ArgumentDescriptor> captured = new Capture<ArgumentDescriptor>();
-        EasyMock.expect(logAdapter.toMessage(eq("inSimple"), aryEq(PARAM_VALUE), capture(captured))).andReturn(">");
-        EasyMock.expect(logAdapter.toMessage("inSimple", 2, Void.TYPE)).andReturn("<");
+        EasyMock.expect(logAdapter.toMessage(eq("inExtended"), aryEq(PARAM_VALUE), capture(captured))).andReturn(">");
+        EasyMock.expect(logAdapter.toMessage("inExtended", 2, Void.TYPE)).andReturn("<");
 
         expectDebugLogging();
 
         EasyMock.replay(logAdapter, logger);
-        barService.inSimple("@1", "@2");
-        assertParams(captured.getValue(), S_PARAM_NAMES, true, true);
+        barService.inExtended("@1", "@2");
+        assertParams(captured.getValue(), E_PARAM_NAMES, true, true);
         EasyMock.verify(logAdapter, logger);
     }
 
     @Test
     public void testOoverridden() throws Exception {
-        expectSimpleBarServiceLogger();
+        expectExtendedBarServiceLogger();
         Capture<ArgumentDescriptor> captured = new Capture<ArgumentDescriptor>();
         EasyMock.expect(logAdapter.toMessage(eq("overridden"), aryEq(PARAM_VALUE), capture(captured))).andReturn(">");
         EasyMock.expect(logAdapter.toMessage("overridden", 2, Void.TYPE)).andReturn("<");
@@ -125,7 +125,7 @@ public class AOPLoggerInheritanceTestCase {
 
         EasyMock.replay(logAdapter, logger);
         barService.overridden("@1", "@2");
-        assertParams(captured.getValue(), S_PARAM_NAMES, false, true);
+        assertParams(captured.getValue(), E_PARAM_NAMES, false, true);
         EasyMock.verify(logAdapter, logger);
     }
 
