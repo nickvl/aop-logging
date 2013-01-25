@@ -8,7 +8,7 @@ package net.ng.xspring.core.log.aop.benchmark;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import net.ng.xspring.core.log.aop.annotation.LogError;
+import net.ng.xspring.core.log.aop.annotation.LogTrace;
 import net.ng.xspring.core.log.aop.annotation.Lp;
 
 /**
@@ -32,7 +32,7 @@ public class LoggableServiceImpl implements LoggableService {
         return res;
     }
 
-    @LogError
+    @LogTrace
     @Override
     public int aopLogMethod(String a, @Lp int b) {
         return b + 1;

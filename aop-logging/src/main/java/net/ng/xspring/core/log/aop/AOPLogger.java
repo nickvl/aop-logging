@@ -8,6 +8,8 @@ package net.ng.xspring.core.log.aop;
 import java.lang.reflect.Method;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.apache.commons.logging.Log;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -28,6 +30,7 @@ public class AOPLogger implements InitializingBean {
     private Map<Severity, LogStrategy> logStrategies;
     private LocalVariableTableParameterNameDiscoverer localVariableNameDiscoverer = new LocalVariableTableParameterNameDiscoverer();
     private ExceptionResolver exceptionResolver = new ExceptionResolver();
+    private ConcurrentMap<Method, MethodDescriptor> cache = new ConcurrentHashMap<Method, MethodDescriptor>();
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -64,12 +67,13 @@ public class AOPLogger implements InitializingBean {
         Log logger = logAdapter.getLog(joinPoint.getTarget().getClass());
         Method method = extractMethod(joinPoint);
 
-        InvocationDescriptor invocationDescriptor = new InvocationDescriptor.Builder(method).build();
+        MethodDescriptor descriptor = getMethodDescriptor(method);
+        InvocationDescriptor invocationDescriptor = descriptor.getInvocationDescriptor();
 
-        String methodName = joinPoint.getSignature().getName(); // TODO could be optimized
+        String methodName = method.getName();
 
         if (beforeLoggingOn(invocationDescriptor, logger)) {
-            ArgumentDescriptor argumentDescriptor = new ArgumentDescriptor.Builder(method, args.length, localVariableNameDiscoverer).build();
+            ArgumentDescriptor argumentDescriptor = getArgumentDescriptor(descriptor, method, args.length);
             logStrategies.get(invocationDescriptor.getBeforeSeverity()).logBefore(logger, methodName, args, argumentDescriptor);
         }
 
@@ -80,7 +84,7 @@ public class AOPLogger implements InitializingBean {
             try {
                 result = joinPoint.proceed(args);
             } catch (Exception e) {
-                ExceptionDescriptor exceptionDescriptor = new ExceptionDescriptor.Builder(invocationDescriptor.getExceptionAnnotation()).build();
+                ExceptionDescriptor exceptionDescriptor = getExceptionDescriptor(descriptor, invocationDescriptor);
                 Class<? extends Exception> resolved = exceptionResolver.resolve(exceptionDescriptor, e);
                 if (resolved != null) {
                     ExceptionSeverity excSeverity = exceptionDescriptor.getExceptionSeverity(resolved);
@@ -96,6 +100,34 @@ public class AOPLogger implements InitializingBean {
             logStrategies.get(invocationDescriptor.getAfterSeverity()).logAfter(logger, methodName, args.length, loggedResult);
         }
         return result;
+    }
+
+    private MethodDescriptor getMethodDescriptor(Method method) {
+        MethodDescriptor cached = cache.get(method);
+        if (cached != null) {
+            return cached;
+        }
+        cached = new MethodDescriptor(new InvocationDescriptor.Builder(method).build());
+        MethodDescriptor prev = cache.putIfAbsent(method, cached);
+        return prev == null ? cached : prev;
+    }
+
+    private ArgumentDescriptor getArgumentDescriptor(MethodDescriptor descriptor, Method method, int argumentCount) {
+        if (descriptor.getArgumentDescriptor() != null) {
+            return descriptor.getArgumentDescriptor();
+        }
+        ArgumentDescriptor argumentDescriptor = new ArgumentDescriptor.Builder(method, argumentCount, localVariableNameDiscoverer).build();
+        descriptor.setArgumentDescriptor(argumentDescriptor);
+        return argumentDescriptor;
+    }
+
+    private ExceptionDescriptor getExceptionDescriptor(MethodDescriptor descriptor, InvocationDescriptor invocationDescriptor) {
+        if (descriptor.getExceptionDescriptor() != null) {
+            return descriptor.getExceptionDescriptor();
+        }
+        ExceptionDescriptor exceptionDescriptor = new ExceptionDescriptor.Builder(invocationDescriptor.getExceptionAnnotation()).build();
+        descriptor.setExceptionDescriptor(exceptionDescriptor);
+        return exceptionDescriptor;
     }
 
     private Method extractMethod(ProceedingJoinPoint joinPoint) throws NoSuchMethodException {

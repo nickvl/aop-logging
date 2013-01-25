@@ -76,6 +76,6 @@ Quick start
 
 Commons logging configured to log using log4j framework:
 
-    2013-01-23 09:24:48,043 TRACE [net.ng.xspring.core.log.aop.benchmark.LoggableServiceImpl] (main) - calling: logClearMethod(2 arguments: a=a, b=3)
-    2013-01-23 09:24:48,043 TRACE [net.ng.xspring.core.log.aop.benchmark.LoggableServiceImpl] (main) - returning: logClearMethod(2 arguments):3
+    2013-01-26 22:26:44,045 TRACE [net.ng.xspring.core.log.aop.benchmark.LoggableServiceImpl] (main) - calling: aopLogMethod(2 arguments: b=33)
+    2013-01-26 22:26:44,046 TRACE [net.ng.xspring.core.log.aop.benchmark.LoggableServiceImpl] (main) - returning: aopLogMethod(2 arguments):34
 
