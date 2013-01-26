@@ -18,7 +18,7 @@ Quick start
       <dependency>
         <groupId>net.ng.xspring</groupId>
         <artifactId>aop-logging</artifactId>
-        <version>0.1.0</version>
+        <version>0.1.1</version>
       </dependency>
     ...
     </dependencies>
