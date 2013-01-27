@@ -5,6 +5,10 @@
 
 package net.ng.xspring.core.log.aop;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.BitSet;
 import java.util.Collection;
 import java.util.Comparator;
 
@@ -65,4 +69,25 @@ public final class TestSupportUtility {
         return EasyMock.cmp(expected, REFLECTION_COMPARATOR, LogicalOperator.EQUAL);
     }
 
+    public static ArgumentDescriptor createArgumentDescriptor(String[] argumentNames, boolean... indexes) throws NoSuchMethodException,
+            IllegalAccessException, InvocationTargetException, InstantiationException {
+        BitSet argIndexes = new BitSet(indexes.length);
+        for (int i = 0; i < indexes.length; i++) {
+            if (indexes[i]) {
+                argIndexes.set(i);
+            }
+        }
+        return createArgumentDescriptor(argIndexes, argumentNames);
+    }
+
+    public static ArgumentDescriptor createArgumentDescriptor(BitSet indexes, String[] argumentNames) throws NoSuchMethodException,
+            IllegalAccessException, InvocationTargetException, InstantiationException {
+        if (argumentNames != null) {
+            assertTrue(String.format("wrong arguments: argCount[%s] more then argNames[%s]", indexes, Arrays.toString(argumentNames)),
+                    indexes.length() <= argumentNames.length);
+        }
+        Constructor<ArgumentDescriptor> constructor = ArgumentDescriptor.class.getDeclaredConstructor(BitSet.class, String[].class);
+        constructor.setAccessible(true);
+        return constructor.newInstance(indexes, argumentNames);
+    }
 }

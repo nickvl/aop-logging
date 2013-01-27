@@ -31,7 +31,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 /**
- * Tests checks logging annotation parameters.
+ * Tests check logging annotation parameters.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("AOPLoggerTestCase-context.xml")
