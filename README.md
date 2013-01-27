@@ -18,7 +18,7 @@ Quick start
       <dependency>
         <groupId>net.ng.xspring</groupId>
         <artifactId>aop-logging</artifactId>
-        <version>0.1.1</version>
+        <version>0.1.2</version>
       </dependency>
     ...
     </dependencies>
@@ -79,3 +79,11 @@ Commons logging configured to log using log4j framework:
     2013-01-26 22:26:44,045 TRACE [net.ng.xspring.core.log.aop.benchmark.LoggableServiceImpl] (main) - calling: aopLogMethod(2 arguments: b=33)
     2013-01-26 22:26:44,046 TRACE [net.ng.xspring.core.log.aop.benchmark.LoggableServiceImpl] (main) - returning: aopLogMethod(2 arguments):34
 
+### Performance measuring
+
+A simple test shows the following results:
+
+    Running net.ng.xspring.core.log.aop.benchmark.AOPLoggerPerformanceITCase
+        561 ns takes a method when no logging is used
+        1008 ns takes a method when direct logging is used
+        4794 ns takes a method when aop logging is used
