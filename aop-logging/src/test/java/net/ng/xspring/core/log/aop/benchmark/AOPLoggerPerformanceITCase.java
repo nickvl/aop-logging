@@ -64,6 +64,7 @@ public class AOPLoggerPerformanceITCase {
         assertEquals(33, loggableService.logManualMethod("b", 32));
         assertEquals(34, loggableService.aopLogMethod("c", 33));
 
+        System.out.println("Service invocation benchmark (" + this.getClass().getSimpleName() + "):");
         testLogClearMethod();
         testLogManualMethod();
         testAopLogMethod();

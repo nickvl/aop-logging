@@ -35,7 +35,7 @@ public class AOPLogger implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         if (logAdapter == null) {
-            logAdapter = new SimpleLogAdapter();
+            logAdapter = new UniversalLogAdapter(null);
         }
         logStrategies = new EnumMap<Severity, LogStrategy>(Severity.class);
         logStrategies.put(Severity.FATAL, new LogStrategy.FatalLogStrategy(logAdapter));
@@ -61,8 +61,6 @@ public class AOPLogger implements InitializingBean {
             + " || execution(* (@(@net.ng.xspring.core.log.aop.annotation.Logging *) *).*(..))"  // per class
             , argNames = "joinPoint")
     public Object logTheMethod(ProceedingJoinPoint joinPoint) throws Throwable {
-        // TODO if toStringOverridden, big list and array
-
         Object[] args = joinPoint.getArgs();
         Log logger = logAdapter.getLog(joinPoint.getTarget().getClass());
         Method method = extractMethod(joinPoint);

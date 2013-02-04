@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
- * {@link AbstractLogAdapter} tests.
+ * Tests {@link AbstractLogAdapter}.
  */
 public class AbstractLogAdapterTestCase {
 

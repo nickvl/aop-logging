@@ -5,7 +5,7 @@
 
     <groupId>net.ng.xspring</groupId>
     <artifactId>aop-logging</artifactId>
-    <version>0.1.2</version>
+    <version>0.2.0-SNAPSHOT</version>
     <name>NG xSpring AOP logging</name>
 
     <licenses>
@@ -110,7 +110,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.5.1</version>
+                <version>3.0</version>
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
@@ -134,7 +134,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <inherited>true</inherited>
             </plugin>
         </plugins>
         <pluginManagement>
@@ -153,6 +152,7 @@
                         <failOnViolation>true</failOnViolation>
                         <consoleOutput>true</consoleOutput>
                         <headerLocation>../checkstyle/java.header</headerLocation>
+                        <!--<includeTestSourceDirectory>true</includeTestSourceDirectory>-->
                     </configuration>
                     <executions>
                         <execution>
