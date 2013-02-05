@@ -16,12 +16,17 @@ import java.util.Set;
 /**
  * Universal log adapter, capable to out parameter values by reflection.
  */
-class UniversalLogAdapter extends AbstractLogAdapter {
+public class UniversalLogAdapter extends AbstractLogAdapter {
     private final Set<String> excludeFieldNames;
 
     // TODO init is not complete
-    public UniversalLogAdapter(Set<String> excludeFieldNames) {
 
+    /**
+     * Constructor.
+     *
+     * @param excludeFieldNames field names to exclude from building
+     */
+    public UniversalLogAdapter(Set<String> excludeFieldNames) {
         this.excludeFieldNames = excludeFieldNames == null ? null : new HashSet<String>(excludeFieldNames);
     }
 

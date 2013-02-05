@@ -7,6 +7,8 @@ Apache commons-logging is used to log messages (the same component used in Sprin
 
 It allows to flexible configure log message levels, provides exception handling taking into account 
 exception classes hierarchy (alike try-catch). Log annotations could be applied for both methods and classes.
+This logger is capable to log method parameters and result using reflection if the corresponding classes
+do not provide toString() method.
 
 Quick start
 -----------
@@ -18,7 +20,7 @@ Quick start
       <dependency>
         <groupId>net.ng.xspring</groupId>
         <artifactId>aop-logging</artifactId>
-        <version>0.1.2</version>
+        <version>0.2.0</version>
       </dependency>
     ...
     </dependencies>
@@ -84,6 +86,12 @@ Commons logging configured to log using log4j framework:
 A simple test shows the following results:
 
     Running net.ng.xspring.core.log.aop.benchmark.AOPLoggerPerformanceITCase
-        561 ns takes a method when no logging is used
-        1008 ns takes a method when direct logging is used
-        4794 ns takes a method when aop logging is used
+    Service invocation benchmark (AOPLoggerPerformanceITCase):
+        600 ns takes a method when no logging is used
+        1053 ns takes a method when direct logging is used
+        5263 ns takes a method when aop logging is used
+
+    Running net.ng.xspring.core.log.aop.benchmark.UniversalLogAdapterPerformanceITCase
+    Building toString value benchmark (UniversalLogAdapterPerformanceITCase):
+        2979 ns takes a method when reflection is used
+        98 ns takes a method when overridden toString is used

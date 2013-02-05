@@ -8,7 +8,7 @@ package net.ng.xspring.core.log.aop;
 /**
  * Simple log adapter.
  */
-class SimpleLogAdapter extends AbstractLogAdapter {
+public class SimpleLogAdapter extends AbstractLogAdapter {
 
     @Override
     protected String asString(Object value) {

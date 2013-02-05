@@ -3,10 +3,14 @@
  *   Some Rights Reserved.
  ************************************************************************************/
 
-package net.ng.xspring.core.log.aop;
+package net.ng.xspring.core.log.aop.benchmark;
+
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import net.ng.xspring.core.log.aop.UniversalLogAdapter;
 
 import static org.junit.Assert.assertEquals;
 
@@ -16,11 +20,11 @@ import static org.junit.Assert.assertEquals;
 public class UniversalLogAdapterPerformanceITCase {
     private static final int REPS = 100000;
 
-    private UniversalLogAdapter logAdapter;
+    private UniversalLogAdapterPublic logAdapter;
 
     @Before
     public void setUp() throws Exception {
-        logAdapter = new UniversalLogAdapter(null);
+        logAdapter = new UniversalLogAdapterPublic(null);
     }
 
     @Test
@@ -70,4 +74,14 @@ public class UniversalLogAdapterPerformanceITCase {
         System.out.println("\t" + executionTime + " ns takes a method when " + msg + " is used");
     }
 
+    private static class UniversalLogAdapterPublic extends UniversalLogAdapter {
+        public UniversalLogAdapterPublic(Set<String> excludeFieldNames) {
+            super(excludeFieldNames);
+        }
+
+        @Override
+        public String asString(Object value) {
+            return super.asString(value);
+        }
+    }
 }
