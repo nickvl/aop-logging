@@ -7,35 +7,12 @@
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         urn:nickvl/xspring/aop-logger urn:nickvl/xspring/aop-logger/aop-logger.xsd">
 
-    <!--
-        <aop:aspectj-autoproxy/>
-        <bean class="net.ng.xspring.core.log.aop.AOPLogger"/>
-    -->
-    <!--
-        <aop:config>
-            <aop:aspect ref="net.ng.xspring.core.log.aop.benchmark.LoggableServiceImpl">
-                <aop:after method="hashCode" pointcut="execution(@(@net.ng.xspring.core.log.aop.annotation.Logging *) * *.* (..))"/>
-            </aop:aspect>
-        </aop:config>
-    -->
-
     <aop-logger:annotation-logger>
         <aop-logger:config>
             <aop-logger:to-string/>
         </aop-logger:config>
     </aop-logger:annotation-logger>
 
-
-    <!--
-        <aop:config>
-            <aop:aspect id="myAspect" ref="fifi" >
-                <aop:pointcut id="rrr" expression="execution(@(@net.ng.xspring.core.log.aop.annotation.Logging *) * *.* (..))
-                 || execution(* (@(@net.ng.xspring.core.log.aop.annotation.Logging *) *).*(..))" />
-                <aop:around method="logTheMethod" pointcut-ref="rrr"/>
-            </aop:aspect>
-        </aop:config>
-        <bean id="fifi" class="net.ng.xspring.core.log.aop.AOPLogger"/>
-    -->
     <bean class="net.ng.xspring.core.log.aop.benchmark.LoggableServiceImpl"/>
 
 </beans>

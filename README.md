@@ -20,16 +20,28 @@ Quick start
       <dependency>
         <groupId>net.ng.xspring</groupId>
         <artifactId>aop-logging</artifactId>
-        <version>0.2.0</version>
+        <version>0.2.1</version>
       </dependency>
     ...
     </dependencies>
 
 ### Apply the logging utility in your project
 
-1.Add bean definition
+1.Activates the logger in spring's context
 
-`<bean class="net.ng.xspring.core.log.aop.AOPLogger"/>`
+    <?xml version="1.0" encoding="UTF-8"?>
+    <beans
+            xmlns="http://www.springframework.org/schema/beans"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns:aop-logger="urn:nickvl/xspring/aop-logger"
+            xsi:schemaLocation="
+            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+            urn:nickvl/xspring/aop-logger urn:nickvl/xspring/aop-logger/aop-logger.xsd">
+
+        <!-- Activates the logger and @AspectJ style of Spring AOP. There are additional configuration options. -->
+        <aop-logger:annotation-logger/>
+        ...
+    </beans>
 
 2.Add log annotation on required methods
 
