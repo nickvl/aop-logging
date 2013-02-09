@@ -9,7 +9,7 @@
 
     <aop-logger:annotation-logger>
         <aop-logger:config>
-            <aop-logger:reflection-to-string/>
+            <aop-logger:reflection-to-string multi-element-structure-crop-threshold="7"/>
         </aop-logger:config>
     </aop-logger:annotation-logger>
 

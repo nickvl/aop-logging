@@ -9,12 +9,13 @@ import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.IdentityHashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
 /**
  * String representation builder of any class instance.
- * TODO consider skipping null values
+ * TODO consider skipping null field values
  */
 final class ToString {
     private static final String NULL_VALUE = "NIL";
@@ -28,21 +29,21 @@ final class ToString {
     private static final String SIZE_START = "..<size=";
     private static final String SIZE_END = ">..";
 
-    private final int multiElementStructureCropLimit; // TODO implement me
+    private final int cropThreshold;
 
     private final StringBuilder buffer = new StringBuilder(512);
     private final Set<Object> valuesInProgress = Collections.newSetFromMap(new IdentityHashMap<Object, Boolean>());
 
-    private ToString(int multiElementStructureCropLimit) {
-        this.multiElementStructureCropLimit = multiElementStructureCropLimit;
+    private ToString(int cropThreshold) {
+        this.cropThreshold = cropThreshold;
     }
 
     public static ToString createDefault() {
-        return new ToString(Integer.MAX_VALUE);
+        return new ToString(-1);
     }
 
-    public static ToString createCropInstance(int cropLimit) {
-        return new ToString(cropLimit);
+    public static ToString createCropInstance(int cropThreshold) {
+        return new ToString(cropThreshold);
     }
 
     /**
@@ -110,22 +111,87 @@ final class ToString {
     }
 
     /**
-     * Adds array as an given object to build the <code>toString</code>.
+     * Adds array as a given object to build the <code>toString</code>.
      *
      * @param array the array to build a <code>toString</code>
      */
     public void addArray(Object array) {
         buffer.append(ENUMERATION_START);
-        for (int i = 0; i < Array.getLength(array); i++) {
-            Object item = Array.get(array, i);
-            if (i > 0) {
+        int maxIndex = Array.getLength(array) - 1;
+        if (maxIndex != -1) {
+            for (int i = 0;; i++) {
+                if (i == cropThreshold) {
+                    buffer.append(SIZE_START).append(maxIndex + 1).append(SIZE_END);
+                    break;
+                }
+                Object item = Array.get(array, i);
+                if (item == null) {
+                    addNullValue();
+                } else {
+                    parse(item);
+                }
+                if (i == maxIndex) {
+                    break;
+                }
                 buffer.append(ENUMERATION_SEPARATOR);
             }
-            if (item == null) {
-                addNullValue();
+        }
+        buffer.append(ENUMERATION_END);
+    }
 
-            } else {
-                parse(item);
+    /**
+     * Adds collection as a given object to build the <code>toString</code>.
+     *
+     * @param coll the collection to build a <code>toString</code>
+     */
+    public void addCollection(Collection<?> coll) {
+        buffer.append(ENUMERATION_START);
+        if (!coll.isEmpty()) {
+            Iterator<?> iterator = coll.iterator();
+            for (int i = 0;; i++) {
+                if (i == cropThreshold) {
+                    buffer.append(SIZE_START).append(coll.size()).append(SIZE_END);
+                    break;
+                }
+                Object item = iterator.next();
+                if (item == null) {
+                    addNullValue();
+                } else {
+                    parse(item);
+                }
+                if (!iterator.hasNext()) {
+                    break;
+                }
+                buffer.append(ENUMERATION_SEPARATOR);
+            }
+        }
+        buffer.append(ENUMERATION_END);
+    }
+
+    /**
+     * Adds map as a given object to build the <code>toString</code>.
+     *
+     * @param map the map to build a <code>toString</code>
+     */
+    public void addMap(Map<?, ?> map) {
+        buffer.append(ENUMERATION_START);
+        if (!map.isEmpty()) {
+            Iterator<?> iterator = map.entrySet().iterator();
+            for (int i = 0;; i++) {
+                if (i == cropThreshold) {
+                    buffer.append(SIZE_START).append(map.size()).append(SIZE_END);
+                    break;
+                }
+                Object item = iterator.next();
+                if (item == null) {
+                    addNullValue();
+                } else {
+                    parse(item);
+                }
+                if (!iterator.hasNext()) {
+                    break;
+                }
+                buffer.append(ENUMERATION_SEPARATOR);
             }
         }
         buffer.append(ENUMERATION_END);
@@ -140,9 +206,9 @@ final class ToString {
         valuesInProgress.add(value);
 
         if (value instanceof Collection<?>) {
-            add((Collection<?>) value);
+            addCollection((Collection<?>) value);
         } else if (value instanceof Map<?, ?>) {
-            add((Map<?, ?>) value);
+            addMap((Map<?, ?>) value);
         } else if (value instanceof long[]) {
             add((long[]) value);
         } else if (value instanceof int[]) {
@@ -184,45 +250,25 @@ final class ToString {
         }
     }
 
-    private void add(Collection<?> coll) {
-        // todo crop
-        buffer.append(coll);
-    }
-
-    private void add(Map<?, ?> map) {
-        // todo crop
-        buffer.append(map);
-    }
-
-/*
-    private void add(Iterable<?> iterable) {
-        buffer.append(ENUMERATION_START);
-        Iterator<?> i = iterable.iterator();
-        for (; ; ) {
-            Object e = i.next();
-            //buffer.append(e == iterable ? "(this)" : e);
-            parse(e);
-            if (!i.hasNext()) {
-                break;
-            }
-            buffer.append(ENUMERATION_SEPARATOR);
-        }
-        buffer.append(ENUMERATION_END);
-    }
-*/
-
     private void add(Object[] array) {
         buffer.append(ENUMERATION_START);
-        for (int i = 0; i < array.length; i++) {
-            Object item = array[i];
-            if (i > 0) {
+        int maxIndex = array.length - 1;
+        if (maxIndex != -1) {
+            for (int i = 0;; i++) {
+                if (i == cropThreshold) {
+                    buffer.append(SIZE_START).append(array.length).append(SIZE_END);
+                    break;
+                }
+                Object item = array[i];
+                if (item == null) {
+                    addNullValue();
+                } else {
+                    parse(item);
+                }
+                if (i == maxIndex) {
+                    break;
+                }
                 buffer.append(ENUMERATION_SEPARATOR);
-            }
-            if (item == null) {
-                addNullValue();
-
-            } else {
-                parse(item);
             }
         }
         buffer.append(ENUMERATION_END);
@@ -230,88 +276,152 @@ final class ToString {
 
     private void add(long[] array) {
         buffer.append(ENUMERATION_START);
-        for (int i = 0; i < array.length; i++) {
-            if (i > 0) {
+        int maxIndex = array.length - 1;
+        if (maxIndex != -1) {
+            for (int i = 0;; i++) {
+                if (i == cropThreshold) {
+                    buffer.append(SIZE_START).append(array.length).append(SIZE_END);
+                    break;
+                }
+                buffer.append(array[i]);
+                if (i == maxIndex) {
+                    break;
+                }
                 buffer.append(ENUMERATION_SEPARATOR);
             }
-            buffer.append(array[i]);
         }
         buffer.append(ENUMERATION_END);
     }
 
     private void add(int[] array) {
         buffer.append(ENUMERATION_START);
-        for (int i = 0; i < array.length; i++) {
-            if (i > 0) {
+        int maxIndex = array.length - 1;
+        if (maxIndex != -1) {
+            for (int i = 0;; i++) {
+                if (i == cropThreshold) {
+                    buffer.append(SIZE_START).append(array.length).append(SIZE_END);
+                    break;
+                }
+                buffer.append(array[i]);
+                if (i == maxIndex) {
+                    break;
+                }
                 buffer.append(ENUMERATION_SEPARATOR);
             }
-            buffer.append(array[i]);
         }
         buffer.append(ENUMERATION_END);
     }
 
     private void add(short[] array) {
         buffer.append(ENUMERATION_START);
-        for (int i = 0; i < array.length; i++) {
-            if (i > 0) {
+        int maxIndex = array.length - 1;
+        if (maxIndex != -1) {
+            for (int i = 0;; i++) {
+                if (i == cropThreshold) {
+                    buffer.append(SIZE_START).append(array.length).append(SIZE_END);
+                    break;
+                }
+                buffer.append(array[i]);
+                if (i == maxIndex) {
+                    break;
+                }
                 buffer.append(ENUMERATION_SEPARATOR);
             }
-            buffer.append(array[i]);
         }
         buffer.append(ENUMERATION_END);
     }
 
     private void add(byte[] array) {
         buffer.append(ENUMERATION_START);
-        for (int i = 0; i < array.length; i++) {
-            if (i > 0) {
+        int maxIndex = array.length - 1;
+        if (maxIndex != -1) {
+            for (int i = 0;; i++) {
+                if (i == cropThreshold) {
+                    buffer.append(SIZE_START).append(array.length).append(SIZE_END);
+                    break;
+                }
+                buffer.append(array[i]);
+                if (i == maxIndex) {
+                    break;
+                }
                 buffer.append(ENUMERATION_SEPARATOR);
             }
-            buffer.append(array[i]);
         }
         buffer.append(ENUMERATION_END);
     }
 
     private void add(char[] array) {
         buffer.append(ENUMERATION_START);
-        for (int i = 0; i < array.length; i++) {
-            if (i > 0) {
+        int maxIndex = array.length - 1;
+        if (maxIndex != -1) {
+            for (int i = 0;; i++) {
+                if (i == cropThreshold) {
+                    buffer.append(SIZE_START).append(array.length).append(SIZE_END);
+                    break;
+                }
+                buffer.append(array[i]);
+                if (i == maxIndex) {
+                    break;
+                }
                 buffer.append(ENUMERATION_SEPARATOR);
             }
-            buffer.append(array[i]);
         }
         buffer.append(ENUMERATION_END);
     }
 
     private void add(double[] array) {
         buffer.append(ENUMERATION_START);
-        for (int i = 0; i < array.length; i++) {
-            if (i > 0) {
+        int maxIndex = array.length - 1;
+        if (maxIndex != -1) {
+            for (int i = 0;; i++) {
+                if (i == cropThreshold) {
+                    buffer.append(SIZE_START).append(array.length).append(SIZE_END);
+                    break;
+                }
+                buffer.append(array[i]);
+                if (i == maxIndex) {
+                    break;
+                }
                 buffer.append(ENUMERATION_SEPARATOR);
             }
-            buffer.append(array[i]);
         }
         buffer.append(ENUMERATION_END);
     }
 
     private void add(float[] array) {
         buffer.append(ENUMERATION_START);
-        for (int i = 0; i < array.length; i++) {
-            if (i > 0) {
+        int maxIndex = array.length - 1;
+        if (maxIndex != -1) {
+            for (int i = 0;; i++) {
+                if (i == cropThreshold) {
+                    buffer.append(SIZE_START).append(array.length).append(SIZE_END);
+                    break;
+                }
+                buffer.append(array[i]);
+                if (i == maxIndex) {
+                    break;
+                }
                 buffer.append(ENUMERATION_SEPARATOR);
             }
-            buffer.append(array[i]);
         }
         buffer.append(ENUMERATION_END);
     }
 
     private void add(boolean[] array) {
         buffer.append(ENUMERATION_START);
-        for (int i = 0; i < array.length; i++) {
-            if (i > 0) {
+        int maxIndex = array.length - 1;
+        if (maxIndex != -1) {
+            for (int i = 0;; i++) {
+                if (i == cropThreshold) {
+                    buffer.append(SIZE_START).append(array.length).append(SIZE_END);
+                    break;
+                }
+                buffer.append(array[i]);
+                if (i == maxIndex) {
+                    break;
+                }
                 buffer.append(ENUMERATION_SEPARATOR);
             }
-            buffer.append(array[i]);
         }
         buffer.append(ENUMERATION_END);
     }

@@ -5,6 +5,12 @@
 
 package net.ng.xspring.core.log.aop;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -62,6 +68,20 @@ public class UniversalLogAdapterTestCase {
     public void testAsStringArray() throws Exception {
         assertEquals("int[][{1,2}]", logAdapter.asString(new int[]{1, 2}));
         assertEquals("int[][][{{1},{2}}]", logAdapter.asString(new int[][]{{1}, {2}}));
+    }
+
+    @Test
+    public void testAsStringCollection() throws Exception {
+        List<Integer> collection = new ArrayList<Integer>(Arrays.asList(1, 2));
+        assertEquals("ArrayList[{1,2}]", logAdapter.asString(collection));
+    }
+
+    @Test
+    public void testAsStringMap() throws Exception {
+        Map<String, Integer> map = new LinkedHashMap<String, Integer>();
+        map.put("s1", 1);
+        map.put("s2", 2);
+        assertEquals("LinkedHashMap[{s1=1,s2=2}]", logAdapter.asString(map));
     }
 
     @Test
@@ -188,6 +208,52 @@ public class UniversalLogAdapterTestCase {
             private Foo name = new Foo();
         }
         assertEquals("Bar[name=abracadabra]", logAdapter.asString(new Bar()));
+    }
+
+    @Test
+    public void testAsStringArrayCropping() throws Exception {
+        int[][] array = {{1, 2, 3}, {4, 5, 6}};
+        assertEquals("int[][][{{1,2,3},{4,5,6}}]", logAdapter.asString(array));
+
+        logAdapter = new UniversalLogAdapter(4, null);
+        assertEquals("int[][][{{1,2,3},{4,5,6}}]", logAdapter.asString(array));
+
+        logAdapter = new UniversalLogAdapter(3, null);
+        assertEquals("int[][][{{1,2,3},{4,5,6}}]", logAdapter.asString(array));
+
+        logAdapter = new UniversalLogAdapter(2, null);
+        assertEquals("int[][][{{1,2,..<size=3>..},{4,5,..<size=3>..}}]", logAdapter.asString(array));
+
+        logAdapter = new UniversalLogAdapter(1, null);
+        assertEquals("int[][][{{1,..<size=3>..},..<size=2>..}]", logAdapter.asString(array));
+
+        logAdapter = new UniversalLogAdapter(0, null);
+        assertEquals("int[][][{..<size=2>..}]", logAdapter.asString(array));
+    }
+
+    @Test
+    public void testAsStringCollectionCropping() throws Exception {
+        List<Integer> listA = new ArrayList<Integer>(Arrays.asList(1, 2, 3));
+        List<Integer> listB = new ArrayList<Integer>(Arrays.asList(4, 5, 6));
+        List<List<Integer>> collection = new ArrayList<List<Integer>>();
+        collection.add(listA);
+        collection.add(listB);
+        assertEquals("ArrayList[{{1,2,3},{4,5,6}}]", logAdapter.asString(collection));
+
+        logAdapter = new UniversalLogAdapter(4, null);
+        assertEquals("ArrayList[{{1,2,3},{4,5,6}}]", logAdapter.asString(collection));
+
+        logAdapter = new UniversalLogAdapter(3, null);
+        assertEquals("ArrayList[{{1,2,3},{4,5,6}}]", logAdapter.asString(collection));
+
+        logAdapter = new UniversalLogAdapter(2, null);
+        assertEquals("ArrayList[{{1,2,..<size=3>..},{4,5,..<size=3>..}}]", logAdapter.asString(collection));
+
+        logAdapter = new UniversalLogAdapter(1, null);
+        assertEquals("ArrayList[{{1,..<size=3>..},..<size=2>..}]", logAdapter.asString(collection));
+
+        logAdapter = new UniversalLogAdapter(0, null);
+        assertEquals("ArrayList[{..<size=2>..}]", logAdapter.asString(collection));
     }
 
 }

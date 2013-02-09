@@ -18,8 +18,21 @@ import java.util.Set;
  */
 public class UniversalLogAdapter extends AbstractLogAdapter {
     private final Set<String> excludeFieldNames;
+    private final int cropThreshold;
 
-    // TODO init is not complete
+    /**
+     * Constructor.
+     *
+     * @param cropThreshold threshold value of processed elements count to stop building the string, applied only for multi-element structures
+     * @param excludeFieldNames field names to exclude from building
+     */
+    public UniversalLogAdapter(int cropThreshold, Set<String> excludeFieldNames) {
+        if (cropThreshold < 0) {
+            throw new IllegalArgumentException("cropThreshold is negative: " + cropThreshold);
+        }
+        this.cropThreshold = cropThreshold;
+        this.excludeFieldNames = excludeFieldNames == null ? null : new HashSet<String>(excludeFieldNames);
+    }
 
     /**
      * Constructor.
@@ -27,6 +40,7 @@ public class UniversalLogAdapter extends AbstractLogAdapter {
      * @param excludeFieldNames field names to exclude from building
      */
     public UniversalLogAdapter(Set<String> excludeFieldNames) {
+        this.cropThreshold = -1;
         this.excludeFieldNames = excludeFieldNames == null ? null : new HashSet<String>(excludeFieldNames);
     }
 
@@ -39,10 +53,14 @@ public class UniversalLogAdapter extends AbstractLogAdapter {
         if (!(value instanceof Collection<?> || value instanceof Map<?, ?>) && ToStringDetector.INSTANCE.hasToString(clazz)) {
             return value.toString();
         }
-        ToString builder = ToString.createDefault();
+        ToString builder = cropThreshold == -1 ? ToString.createDefault() : ToString.createCropInstance(cropThreshold);
         builder.addStart(value);
 
-        if (clazz.isArray()) {
+        if (value instanceof Collection<?>) {
+            builder.addCollection((Collection<?>) value);
+        } else if (value instanceof Map<?, ?>) {
+            builder.addMap((Map<?, ?>) value);
+        } else if (clazz.isArray()) {
             builder.addArray(value);
         } else {
             while (clazz != Object.class) {

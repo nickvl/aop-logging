@@ -12,6 +12,7 @@ import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.AbstractBeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.util.xml.DomUtils;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 
 import net.ng.xspring.core.log.aop.AOPLogger;
@@ -66,6 +67,10 @@ public class AnnotationLoggerBeanDefinitionParser extends AbstractBeanDefinition
     private BeanDefinition getUniversalLogAdapterBeanDefinition(Element universalLogAdapterElement) {
         // TODO implements configuration of UniversalLogAdapter
         BeanDefinitionBuilder logAdapter = BeanDefinitionBuilder.genericBeanDefinition(UniversalLogAdapter.class);
+        Attr crop = universalLogAdapterElement.getAttributeNode("multi-element-structure-crop-threshold");
+        if (crop != null) {
+            logAdapter.addConstructorArgValue(Integer.valueOf(crop.getValue()));
+        }
         logAdapter.addConstructorArgValue(null);
         return logAdapter.getBeanDefinition();
     }

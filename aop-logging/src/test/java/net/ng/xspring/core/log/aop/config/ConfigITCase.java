@@ -47,7 +47,7 @@ public class ConfigITCase {
     @After
     public void tearDown() throws Exception {
         StubAppender.clear();
-        LogManager.resetConfiguration();
+        LogManager.shutdown();
     }
 
     @Test

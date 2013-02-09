@@ -62,6 +62,16 @@
                         Builds values via reflection if toString() is not overridden.
                     </xsd:documentation>
                 </xsd:annotation>
+                <xsd:complexType>
+                    <xsd:attribute name="multi-element-structure-crop-threshold" type="xsd:int">
+                        <xsd:annotation>
+                            <xsd:documentation>
+                                Optional threshold value of processed elements count to stop building the string, applied only for multi-element
+                                structures (arrays, collections, maps).
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+                </xsd:complexType>
             </xsd:element>
         </xsd:choice>
     </xsd:complexType>
