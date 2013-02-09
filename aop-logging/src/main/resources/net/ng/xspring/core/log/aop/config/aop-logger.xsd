@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns="urn:nickvl/xspring/aop-logger"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="urn:nickvl/xspring/aop-logger"
+            elementFormDefault="qualified"
+            attributeFormDefault="unqualified">
+
+    <!--
+        <xsd:import namespace="http://www.springframework.org/schema/beans"
+                    schemaLocation="http://www.springframework.org/schema/beans/spring-beans.xsd"/>
+    -->
+
+    <xsd:annotation>
+        <xsd:documentation>
+            Defines the elements used in the declarative annotation based logging for Java Spring applications (NG xSpring AOP logging).
+        </xsd:documentation>
+    </xsd:annotation>
+
+    <xsd:element name="annotation-logger">
+        <xsd:annotation>
+            <xsd:documentation>
+                Activates the logger and enables the use of the @AspectJ style of Spring AOP.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="config" type="configType" minOccurs="0" maxOccurs="unbounded">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            Logger configuration.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:sequence>
+            <xsd:attribute name="proxy-target-class" type="xsd:boolean" default="false">
+                <xsd:annotation>
+                    <xsd:documentation><![CDATA[
+	Are class-based (CGLIB) proxies to be created? By default, standard
+	Java interface-based proxies are created.
+
+	Note: Class-based proxies require the @Cacheable and @CacheInvalidate annotations
+	to be defined on the concrete class. Annotations in interfaces will not work
+	in that case (they will rather only work with interface-based proxies)!
+					]]></xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:complexType name="configType">
+        <xsd:choice minOccurs="0" maxOccurs="1">
+            <xsd:element name="to-string">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        java.lang.String#valueOf() is used to build parameter values and method results.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="reflection-to-string">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Builds values via reflection if toString() is not overridden.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:choice>
+    </xsd:complexType>
+
+    <xsd:complexType name="emptyType">
+    </xsd:complexType>
+
+</xsd:schema>

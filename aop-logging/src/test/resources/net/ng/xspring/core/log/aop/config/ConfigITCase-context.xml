@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+        xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:aop-logger="urn:nickvl/xspring/aop-logger"
+        xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        urn:nickvl/xspring/aop-logger urn:nickvl/xspring/aop-logger/aop-logger.xsd">
+
+    <aop-logger:annotation-logger>
+        <aop-logger:config>
+            <aop-logger:to-string/>
+        </aop-logger:config>
+    </aop-logger:annotation-logger>
+
+    <bean class="net.ng.xspring.core.log.aop.config.FooComponent"/>
+
+</beans>

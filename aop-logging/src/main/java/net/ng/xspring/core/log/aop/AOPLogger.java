@@ -6,6 +6,7 @@
 package net.ng.xspring.core.log.aop;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,6 +19,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
+import org.springframework.util.ReflectionUtils;
 
 
 /**
@@ -34,9 +36,6 @@ public class AOPLogger implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        if (logAdapter == null) {
-            logAdapter = new UniversalLogAdapter(null);
-        }
         logStrategies = new EnumMap<Severity, LogStrategy>(Severity.class);
         logStrategies.put(Severity.FATAL, new LogStrategy.FatalLogStrategy(logAdapter));
         logStrategies.put(Severity.ERROR, new LogStrategy.ErrorLogStrategy(logAdapter));
@@ -132,7 +131,12 @@ public class AOPLogger implements InitializingBean {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         // signature.getMethod() points to method declared in interface. it is not suit to discover arg names and arg annotations
         // see AopProxyUtils: org.springframework.cache.interceptor.CacheAspectSupport#execute(CacheAspectSupport.Invoker, Object, Method, Object[])
-        return joinPoint.getTarget().getClass().getMethod(signature.getName(), signature.getParameterTypes());
+        Class<?> targetClass = joinPoint.getTarget().getClass();
+        if (Modifier.isPublic(signature.getMethod().getModifiers())) {
+            return targetClass.getMethod(signature.getName(), signature.getParameterTypes());
+        } else {
+            return ReflectionUtils.findMethod(targetClass, signature.getName(), signature.getParameterTypes());
+        }
     }
 
     private boolean beforeLoggingOn(InvocationDescriptor descriptor, Log logger) {
