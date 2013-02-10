@@ -182,12 +182,8 @@ final class ToString {
                     buffer.append(SIZE_START).append(map.size()).append(SIZE_END);
                     break;
                 }
-                Object item = iterator.next();
-                if (item == null) {
-                    addNullValue();
-                } else {
-                    parse(item);
-                }
+                Object item = iterator.next(); // iterator shall never return null
+                parse(item);
                 if (!iterator.hasNext()) {
                     break;
                 }

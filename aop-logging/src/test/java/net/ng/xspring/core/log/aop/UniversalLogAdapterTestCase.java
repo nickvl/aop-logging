@@ -25,7 +25,7 @@ public class UniversalLogAdapterTestCase {
 
     @Before
     public void setUp() throws Exception {
-        logAdapter = new UniversalLogAdapter(null);
+        logAdapter = new UniversalLogAdapter(false, null);
     }
 
     private String identityHashCode(Object value) {
@@ -49,6 +49,9 @@ public class UniversalLogAdapterTestCase {
             private String[] arr = new String[]{null};
         }
         assertEquals("NullRef[s=NIL;arr={NIL}]", logAdapter.asString(new NullRef()));
+
+        logAdapter = new UniversalLogAdapter(true, null);
+        assertEquals("NullRef[arr={NIL}]", logAdapter.asString(new NullRef()));
     }
 
     @Test
@@ -215,19 +218,19 @@ public class UniversalLogAdapterTestCase {
         int[][] array = {{1, 2, 3}, {4, 5, 6}};
         assertEquals("int[][][{{1,2,3},{4,5,6}}]", logAdapter.asString(array));
 
-        logAdapter = new UniversalLogAdapter(4, null);
+        logAdapter = new UniversalLogAdapter(false, 4, null);
         assertEquals("int[][][{{1,2,3},{4,5,6}}]", logAdapter.asString(array));
 
-        logAdapter = new UniversalLogAdapter(3, null);
+        logAdapter = new UniversalLogAdapter(false, 3, null);
         assertEquals("int[][][{{1,2,3},{4,5,6}}]", logAdapter.asString(array));
 
-        logAdapter = new UniversalLogAdapter(2, null);
+        logAdapter = new UniversalLogAdapter(false, 2, null);
         assertEquals("int[][][{{1,2,..<size=3>..},{4,5,..<size=3>..}}]", logAdapter.asString(array));
 
-        logAdapter = new UniversalLogAdapter(1, null);
+        logAdapter = new UniversalLogAdapter(false, 1, null);
         assertEquals("int[][][{{1,..<size=3>..},..<size=2>..}]", logAdapter.asString(array));
 
-        logAdapter = new UniversalLogAdapter(0, null);
+        logAdapter = new UniversalLogAdapter(false, 0, null);
         assertEquals("int[][][{..<size=2>..}]", logAdapter.asString(array));
     }
 
@@ -240,19 +243,19 @@ public class UniversalLogAdapterTestCase {
         collection.add(listB);
         assertEquals("ArrayList[{{1,2,3},{4,5,6}}]", logAdapter.asString(collection));
 
-        logAdapter = new UniversalLogAdapter(4, null);
+        logAdapter = new UniversalLogAdapter(false, 4, null);
         assertEquals("ArrayList[{{1,2,3},{4,5,6}}]", logAdapter.asString(collection));
 
-        logAdapter = new UniversalLogAdapter(3, null);
+        logAdapter = new UniversalLogAdapter(false, 3, null);
         assertEquals("ArrayList[{{1,2,3},{4,5,6}}]", logAdapter.asString(collection));
 
-        logAdapter = new UniversalLogAdapter(2, null);
+        logAdapter = new UniversalLogAdapter(false, 2, null);
         assertEquals("ArrayList[{{1,2,..<size=3>..},{4,5,..<size=3>..}}]", logAdapter.asString(collection));
 
-        logAdapter = new UniversalLogAdapter(1, null);
+        logAdapter = new UniversalLogAdapter(false, 1, null);
         assertEquals("ArrayList[{{1,..<size=3>..},..<size=2>..}]", logAdapter.asString(collection));
 
-        logAdapter = new UniversalLogAdapter(0, null);
+        logAdapter = new UniversalLogAdapter(false, 0, null);
         assertEquals("ArrayList[{..<size=2>..}]", logAdapter.asString(collection));
     }
 

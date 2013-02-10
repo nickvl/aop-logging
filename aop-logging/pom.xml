@@ -5,7 +5,7 @@
 
     <groupId>net.ng.xspring</groupId>
     <artifactId>aop-logging</artifactId>
-    <version>0.2.2</version>
+    <version>0.2.3-SNAPSHOT</version>
     <name>NG xSpring AOP loggingNG xSpring AOP logging</name>
 
     <licenses>

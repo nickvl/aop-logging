@@ -19,14 +19,17 @@ import java.util.Set;
 public class UniversalLogAdapter extends AbstractLogAdapter {
     private final Set<String> excludeFieldNames;
     private final int cropThreshold;
+    private final boolean skipNullFields;
 
     /**
      * Constructor.
      *
+     * @param skipNullFields use {@code true} to exclude fields which value is {@code null} from building the string
      * @param cropThreshold threshold value of processed elements count to stop building the string, applied only for multi-element structures
-     * @param excludeFieldNames field names to exclude from building
+     * @param excludeFieldNames field names to exclude from building the string
      */
-    public UniversalLogAdapter(int cropThreshold, Set<String> excludeFieldNames) {
+    public UniversalLogAdapter(boolean skipNullFields, int cropThreshold, Set<String> excludeFieldNames) {
+        this.skipNullFields = skipNullFields;
         if (cropThreshold < 0) {
             throw new IllegalArgumentException("cropThreshold is negative: " + cropThreshold);
         }
@@ -37,9 +40,11 @@ public class UniversalLogAdapter extends AbstractLogAdapter {
     /**
      * Constructor.
      *
-     * @param excludeFieldNames field names to exclude from building
+     * @param skipNullFields use {@code true} to exclude fields which value is {@code null} from building the string
+     * @param excludeFieldNames field names to exclude from building the string
      */
-    public UniversalLogAdapter(Set<String> excludeFieldNames) {
+    public UniversalLogAdapter(boolean skipNullFields, Set<String> excludeFieldNames) {
+        this.skipNullFields = skipNullFields;
         this.cropThreshold = -1;
         this.excludeFieldNames = excludeFieldNames == null ? null : new HashSet<String>(excludeFieldNames);
     }
@@ -84,14 +89,17 @@ public class UniversalLogAdapter extends AbstractLogAdapter {
         }
         AccessibleObject.setAccessible(fields, true);
         for (Field field : fields) {
-            String fieldName = field.getName();
             if (!reject(field)) {
+                String fieldName = field.getName();
+                Object fieldValue;
                 try {
                     // memo: it creates wrapper objects for primitive types.
-                    Object fieldValue = field.get(object);
-                    builder.addField(fieldName, fieldValue);
+                    fieldValue = field.get(object);
                 } catch (IllegalAccessException ex) {
                     throw new IllegalStateException("Unexpected IllegalAccessException: " + ex.getMessage());
+                }
+                if (!skipNullFields || fieldValue != null) {
+                    builder.addField(fieldName, fieldValue);
                 }
             }
         }

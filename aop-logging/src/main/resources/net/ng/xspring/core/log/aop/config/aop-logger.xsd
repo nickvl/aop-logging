@@ -63,6 +63,13 @@
                     </xsd:documentation>
                 </xsd:annotation>
                 <xsd:complexType>
+                    <xsd:attribute name="skip-null-fields" type="xsd:boolean" default="false">
+                        <xsd:annotation>
+                            <xsd:documentation>
+                                Weather or not to skip fields which value is null from building the string.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
                     <xsd:attribute name="multi-element-structure-crop-threshold" type="xsd:int">
                         <xsd:annotation>
                             <xsd:documentation>

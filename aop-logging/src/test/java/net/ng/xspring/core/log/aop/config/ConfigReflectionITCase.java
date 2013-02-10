@@ -69,7 +69,7 @@ public class ConfigReflectionITCase {
     private static class AsString extends UniversalLogAdapter {
 
         public AsString() {
-            super(null);
+            super(false, null);
         }
 
         @Override

@@ -13,8 +13,8 @@ import java.util.concurrent.ConcurrentMap;
  * TODO consider ConcurrentReferenceHashMap
  */
 final class ToStringDetector {
-    private final ConcurrentMap<Class<?>, Boolean> cache = new ConcurrentHashMap<Class<?>, Boolean>();
     public static final ToStringDetector INSTANCE = new ToStringDetector();
+    private final ConcurrentMap<Class<?>, Boolean> cache = new ConcurrentHashMap<Class<?>, Boolean>();
 
     private ToStringDetector() {
     }
@@ -30,7 +30,7 @@ final class ToStringDetector {
             cache.putIfAbsent(clazz, hasToString);
             return hasToString;
         } catch (NoSuchMethodException e) {
-            throw new InternalError("method toString() not found.");
+            throw new InternalError("method toString() not found in class: " + clazz);
         }
     }
 }

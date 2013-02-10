@@ -36,7 +36,7 @@ public class AnnotationLoggerBeanDefinitionParser extends AbstractBeanDefinition
         if (parserContext.getRegistry().containsBeanDefinition(NET_NG_XSPRING_CORE_LOG_AOP_INTERNAL_AOPLOGGER_NAME)) {
             return null;
         }
-        return parseComponentElement(element);
+        return parseLoggerElement(element);
     }
 
     @Override
@@ -44,8 +44,7 @@ public class AnnotationLoggerBeanDefinitionParser extends AbstractBeanDefinition
         return NET_NG_XSPRING_CORE_LOG_AOP_INTERNAL_AOPLOGGER_NAME;
     }
 
-    private AbstractBeanDefinition parseComponentElement(Element element) {
-
+    private AbstractBeanDefinition parseLoggerElement(Element element) {
         BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(AOPLogger.class);
         factory.addPropertyValue("logAdapter", parseLogAdapter(element));
         return factory.getBeanDefinition();
@@ -65,8 +64,9 @@ public class AnnotationLoggerBeanDefinitionParser extends AbstractBeanDefinition
     }
 
     private BeanDefinition getUniversalLogAdapterBeanDefinition(Element universalLogAdapterElement) {
-        // TODO implements configuration of UniversalLogAdapter
         BeanDefinitionBuilder logAdapter = BeanDefinitionBuilder.genericBeanDefinition(UniversalLogAdapter.class);
+        String skipNullFields = universalLogAdapterElement.getAttribute("skip-null-fields");
+        logAdapter.addConstructorArgValue(Boolean.valueOf(skipNullFields));
         Attr crop = universalLogAdapterElement.getAttributeNode("multi-element-structure-crop-threshold");
         if (crop != null) {
             logAdapter.addConstructorArgValue(Integer.valueOf(crop.getValue()));

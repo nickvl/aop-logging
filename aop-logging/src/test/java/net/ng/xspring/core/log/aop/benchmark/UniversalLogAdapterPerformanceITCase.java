@@ -76,7 +76,7 @@ public class UniversalLogAdapterPerformanceITCase {
 
     private static class UniversalLogAdapterPublic extends UniversalLogAdapter {
         public UniversalLogAdapterPublic(Set<String> excludeFieldNames) {
-            super(excludeFieldNames);
+            super(false, excludeFieldNames);
         }
 
         @Override
