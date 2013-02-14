@@ -5,8 +5,8 @@
 
     <groupId>net.ng.xspring</groupId>
     <artifactId>aop-logging</artifactId>
-    <version>0.2.3-SNAPSHOT</version>
-    <name>NG xSpring AOP loggingNG xSpring AOP logging</name>
+    <version>0.2.3</version>
+    <name>NG xSpring AOP logging</name>
 
     <licenses>
         <license>
@@ -21,6 +21,10 @@
         </license>
     </licenses>
 
+    <scm>
+        <url>https://github.com/nickvl/aop-logging.git</url>
+    </scm>
+
     <developers>
         <developer>
             <id>nickvl</id>
@@ -30,7 +34,7 @@
     </developers>
 
     <properties>
-        <version.slf4j>1.6.5</version.slf4j>
+        <version.log4j>1.2.17</version.log4j>
         <version.spring>3.2.0.RELEASE</version.spring>
         <version.aspectj>1.6.8</version.aspectj>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -68,9 +72,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>${version.slf4j}</version>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${version.log4j}</version>
             <scope>test</scope>
         </dependency>
 

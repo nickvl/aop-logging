@@ -24,7 +24,7 @@ import net.ng.xspring.core.log.aop.UniversalLogAdapter;
  */
 public class AnnotationLoggerBeanDefinitionParser extends AbstractBeanDefinitionParser {
 
-    private static final String NET_NG_XSPRING_CORE_LOG_AOP_INTERNAL_AOPLOGGER_NAME = "net.ng.xspring.core.log.aop.internal.aoplogger.name";
+    private static final String INTERNAL_AOPLOGGER_NAME = "net.ng.xspring.core.log.aop.internal.aoplogger.name";
     private static final String CONFIG = "config";
     private static final String TO_STRING = "to-string";
     private static final String REFLECTION_TO_STRING = "reflection-to-string";
@@ -33,7 +33,7 @@ public class AnnotationLoggerBeanDefinitionParser extends AbstractBeanDefinition
     protected AbstractBeanDefinition parseInternal(Element element, ParserContext parserContext) {
         // AopNamespaceUtils.registerAutoProxyCreatorIfNecessary(parserContext, element);
         AopNamespaceUtils.registerAspectJAnnotationAutoProxyCreatorIfNecessary(parserContext, element);
-        if (parserContext.getRegistry().containsBeanDefinition(NET_NG_XSPRING_CORE_LOG_AOP_INTERNAL_AOPLOGGER_NAME)) {
+        if (parserContext.getRegistry().containsBeanDefinition(INTERNAL_AOPLOGGER_NAME)) {
             return null;
         }
         return parseLoggerElement(element);
@@ -41,7 +41,7 @@ public class AnnotationLoggerBeanDefinitionParser extends AbstractBeanDefinition
 
     @Override
     protected String resolveId(Element element, AbstractBeanDefinition definition, ParserContext parserContext) {
-        return NET_NG_XSPRING_CORE_LOG_AOP_INTERNAL_AOPLOGGER_NAME;
+        return INTERNAL_AOPLOGGER_NAME;
     }
 
     private AbstractBeanDefinition parseLoggerElement(Element element) {

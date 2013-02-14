@@ -17,15 +17,9 @@ import net.ng.xspring.core.log.aop.annotation.LogException;
 final class ExceptionDescriptor {
 
     private final Map<Class<? extends Exception>, ExceptionSeverity> exceptionSeverity;
-    private final Severity maxSeverity;
 
     private ExceptionDescriptor(Map<Class<? extends Exception>, ExceptionSeverity> exceptionSeverity) {
         this.exceptionSeverity = exceptionSeverity;
-        Severity greatest = null;
-        for (ExceptionSeverity severity : exceptionSeverity.values()) {
-            greatest = Helper.max(greatest, severity.getSeverity());
-        }
-        maxSeverity = greatest;
     }
 
     public Collection<Class<? extends Exception>> getDefinedExceptions() {
@@ -34,10 +28,6 @@ final class ExceptionDescriptor {
 
     public ExceptionSeverity getExceptionSeverity(Class<? extends Exception> resolvedException) {
         return exceptionSeverity.get(resolvedException);
-    }
-
-    public Severity getSeverity() {
-        return maxSeverity;
     }
 
     /**
@@ -65,7 +55,7 @@ final class ExceptionDescriptor {
             for (LogException.Exc exceptions : exceptionGroups) {
                 for (Class<? extends Exception> clazz : exceptions.value()) {
                     ExceptionSeverity descriptor = map.get(clazz);
-                    if (descriptor == null || Helper.greater(targetSeverity, descriptor.getSeverity())) {
+                    if (descriptor == null || Utils.greater(targetSeverity, descriptor.getSeverity())) {
                         map.put(clazz, ExceptionSeverity.create(targetSeverity, exceptions.stacktrace()));
                     }
                 }

@@ -8,8 +8,8 @@ package net.ng.xspring.core.log.aop;
 /**
  * Utility helper class.
  */
-final class Helper {
-    private Helper() {
+final class Utils {
+    private Utils() {
     }
 
     public static <T extends Comparable<T>> T max(T obj, T other) {

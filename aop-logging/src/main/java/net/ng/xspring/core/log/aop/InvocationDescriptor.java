@@ -24,14 +24,11 @@ final class InvocationDescriptor {
     private final Severity beforeSeverity;
     private final Severity afterSeverity;
     private final LogException exceptionAnnotation;
-    private final Severity maxSeverity; // TODO probably is not needed
 
     private InvocationDescriptor(Severity beforeSeverity, Severity afterSeverity, LogException exceptionAnnotation) {
         this.beforeSeverity = beforeSeverity;
         this.afterSeverity = afterSeverity;
         this.exceptionAnnotation = exceptionAnnotation;
-
-        maxSeverity = Helper.max(beforeSeverity, afterSeverity);
     }
 
     public Severity getBeforeSeverity() {
@@ -44,10 +41,6 @@ final class InvocationDescriptor {
 
     public LogException getExceptionAnnotation() {
         return exceptionAnnotation;
-    }
-
-    public Severity getSeverity() {
-        return maxSeverity;
     }
 
     /**
@@ -70,17 +63,17 @@ final class InvocationDescriptor {
             LogException logMethodExceptionAnnotation = parseAnnotations(method.getAnnotations(), true);
             LogException logClassExceptionAnnotation = parseAnnotations(method.getDeclaringClass().getAnnotations(), false);
 
-            if (Helper.hasNotNull(beforeSeverity, defaultSeverity, afterSeverity)) {
+            if (Utils.hasNotNull(beforeSeverity, defaultSeverity, afterSeverity)) {
                 return new InvocationDescriptor(
-                        Helper.coalesce(beforeSeverity, defaultSeverity),
-                        Helper.coalesce(afterSeverity, defaultSeverity),
-                        Helper.coalesce(logMethodExceptionAnnotation, logClassExceptionAnnotation));
+                        Utils.coalesce(beforeSeverity, defaultSeverity),
+                        Utils.coalesce(afterSeverity, defaultSeverity),
+                        Utils.coalesce(logMethodExceptionAnnotation, logClassExceptionAnnotation));
             }
 
             return new InvocationDescriptor(
-                    Helper.coalesce(classBeforeSeverity, classDefaultSeverity),
-                    Helper.coalesce(classAfterSeverity, classDefaultSeverity),
-                    Helper.coalesce(logMethodExceptionAnnotation, logClassExceptionAnnotation));
+                    Utils.coalesce(classBeforeSeverity, classDefaultSeverity),
+                    Utils.coalesce(classAfterSeverity, classDefaultSeverity),
+                    Utils.coalesce(logMethodExceptionAnnotation, logClassExceptionAnnotation));
 
         }
 
@@ -115,19 +108,19 @@ final class InvocationDescriptor {
         private void setSeverity(LogPoint logPoint, Severity targetSeverity, boolean fromMethod) {
             if (fromMethod) {
                 if (logPoint == LogPoint.IN) {
-                    beforeSeverity = Helper.max(targetSeverity, beforeSeverity);
+                    beforeSeverity = Utils.max(targetSeverity, beforeSeverity);
                 } else if (logPoint == LogPoint.OUT) {
-                    afterSeverity = Helper.max(targetSeverity, afterSeverity);
+                    afterSeverity = Utils.max(targetSeverity, afterSeverity);
                 } else if (logPoint == LogPoint.BOTH) {
-                    defaultSeverity = Helper.max(targetSeverity, defaultSeverity);
+                    defaultSeverity = Utils.max(targetSeverity, defaultSeverity);
                 }
             } else {
                 if (logPoint == LogPoint.IN) {
-                    classBeforeSeverity = Helper.max(targetSeverity, classBeforeSeverity);
+                    classBeforeSeverity = Utils.max(targetSeverity, classBeforeSeverity);
                 } else if (logPoint == LogPoint.OUT) {
-                    classAfterSeverity = Helper.max(targetSeverity, classAfterSeverity);
+                    classAfterSeverity = Utils.max(targetSeverity, classAfterSeverity);
                 } else if (logPoint == LogPoint.BOTH) {
-                    classDefaultSeverity = Helper.max(targetSeverity, classDefaultSeverity);
+                    classDefaultSeverity = Utils.max(targetSeverity, classDefaultSeverity);
                 }
             }
         }

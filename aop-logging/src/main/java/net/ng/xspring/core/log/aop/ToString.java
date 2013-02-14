@@ -15,7 +15,6 @@ import java.util.Set;
 
 /**
  * String representation builder of any class instance.
- * TODO consider skipping null field values
  */
 final class ToString {
     private static final String NULL_VALUE = "NIL";

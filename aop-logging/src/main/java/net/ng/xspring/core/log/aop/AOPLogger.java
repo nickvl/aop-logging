@@ -30,9 +30,9 @@ public class AOPLogger implements InitializingBean {
     // private static final Log LOGGER = LogFactory.getLog(AOPLogger.class);
     private LogAdapter logAdapter;
     private Map<Severity, LogStrategy> logStrategies;
-    private LocalVariableTableParameterNameDiscoverer localVariableNameDiscoverer = new LocalVariableTableParameterNameDiscoverer();
-    private ExceptionResolver exceptionResolver = new ExceptionResolver();
-    private ConcurrentMap<Method, MethodDescriptor> cache = new ConcurrentHashMap<Method, MethodDescriptor>();
+    private final LocalVariableTableParameterNameDiscoverer localVariableNameDiscoverer = new LocalVariableTableParameterNameDiscoverer();
+    private final ExceptionResolver exceptionResolver = new ExceptionResolver();
+    private final ConcurrentMap<Method, MethodDescriptor> cache = new ConcurrentHashMap<Method, MethodDescriptor>();
 
     @Override
     public void afterPropertiesSet() throws Exception {

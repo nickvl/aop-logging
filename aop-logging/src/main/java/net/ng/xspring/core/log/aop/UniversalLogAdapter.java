@@ -27,6 +27,7 @@ public class UniversalLogAdapter extends AbstractLogAdapter {
      * @param skipNullFields use {@code true} to exclude fields which value is {@code null} from building the string
      * @param cropThreshold threshold value of processed elements count to stop building the string, applied only for multi-element structures
      * @param excludeFieldNames field names to exclude from building the string
+     * @throws IllegalArgumentException if <code>cropThreshold </code> is negative
      */
     public UniversalLogAdapter(boolean skipNullFields, int cropThreshold, Set<String> excludeFieldNames) {
         this.skipNullFields = skipNullFields;
