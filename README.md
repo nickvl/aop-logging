@@ -28,7 +28,7 @@ Quick start
       <dependency>
         <groupId>com.github.nickvl</groupId>
         <artifactId>xspring-aop-logging</artifactId>
-        <version>0.3.0</version>
+        <version>0.3.1</version>
       </dependency>
     ...
     </dependencies>
