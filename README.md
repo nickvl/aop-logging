@@ -1,14 +1,22 @@
 aop-logging
 ===========
 
-Declarative annotation based logging in Java Spring applications.
+Declarative annotation based logging for Java Spring applications.
 It is a small logging utility. Spring AOP is used for implementation.
 Apache commons-logging is used to log messages (the same component used in Spring framework itself).
+
+The Spring AOPlogging utility provides an ability to log:
+ * entering in spring service methods,
+ * method parameter names and values,
+ * returning from spring service methods,
+ * method execution results,
+ * exceptions thrown from spring service methods.
+ * an ability to avoid logging sensitive information (e.g. passwords)
 
 It allows to flexible configure log message levels, provides exception handling taking into account 
 exception classes hierarchy (alike try-catch). Log annotations could be applied for both methods and classes.
 This logger is capable to log method parameters and result using reflection if the corresponding classes
-do not provide toString() method.
+do not provide toString() method. There is an ability to log a limited amount of elements of standart collections and arrays.
 
 Quick start
 -----------
@@ -18,9 +26,9 @@ Quick start
     <dependencies>
     ...
       <dependency>
-        <groupId>net.ng.xspring</groupId>
-        <artifactId>aop-logging</artifactId>
-        <version>0.2.2</version>
+        <groupId>com.github.nickvl</groupId>
+        <artifactId>xspring-aop-logging</artifactId>
+        <version>0.3.0</version>
       </dependency>
     ...
     </dependencies>
@@ -28,6 +36,8 @@ Quick start
 ### Apply the logging utility in your project
 
 1.Activates the logger in spring's context
+
+1.1.Xml based configuration style
 
     <?xml version="1.0" encoding="UTF-8"?>
     <beans
@@ -42,6 +52,35 @@ Quick start
         <aop-logger:annotation-logger/>
         ...
     </beans>
+
+1.2.Java-based configuration style
+
+
+    package com.me.shop.config;
+    import com.github.nickvl.xspring.core.log.aop.AOPLogger;
+    import com.github.nickvl.xspring.core.log.aop.UniversalLogAdapter;
+    import org.springframework.context.annotation.Bean;
+    import org.springframework.context.annotation.Configuration;
+    import org.springframework.context.annotation.EnableAspectJAutoProxy;
+    
+    import java.util.Collections;
+    import java.util.Set;
+    
+    @Configuration
+    @EnableAspectJAutoProxy
+    public class LoggerConfig {
+    
+        public static final boolean SKIP_NULL_FIELDS = true;
+        public static final int CROP_THRESHOLD = 7;
+        public static final Set<String> EXCLUDE_SECURE_FIELD_NAMES = Collections.<String>emptySet();
+    
+        @Bean
+        public AOPLogger getLoggerBean() {
+            AOPLogger aopLogger = new AOPLogger();
+            aopLogger.setLogAdapter(new UniversalLogAdapter(SKIP_NULL_FIELDS, CROP_THRESHOLD, EXCLUDE_SECURE_FIELD_NAMES));
+            return aopLogger;
+        }
+    }
 
 2.Add log annotation on required methods
 
@@ -58,8 +97,8 @@ Quick start
     import com.me.shop.shop.oxm.PaymentContractResponse;
     import com.me.shop.shop.NotEnoughMoneyException;
 
-    import net.ng.xspring.core.log.aop.annotation.LogDebug;
-    import net.ng.xspring.core.log.aop.annotation.LogInfo;
+    import com.github.nickvl.xspring.core.log.aop.annotation.LogDebug;
+    import com.github.nickvl.xspring.core.log.aop.annotation.LogInfo;
 
     /**
      * Billing shop endpoint.
@@ -90,8 +129,8 @@ Quick start
 
 Commons logging configured to log using log4j framework:
 
-    2013-01-26 22:26:44,045 TRACE [net.ng.xspring.core.log.aop.benchmark.LoggableServiceImpl] (main) - calling: aopLogMethod(2 arguments: b=33)
-    2013-01-26 22:26:44,046 TRACE [net.ng.xspring.core.log.aop.benchmark.LoggableServiceImpl] (main) - returning: aopLogMethod(2 arguments):34
+    2014-05-21 23:22:31,073 TRACE [benchmark.LoggableServiceImpl] (main) - calling: aopLogMethod(2 arguments: b=33)
+    2014-05-21 23:22:31,074 TRACE [benchmark.LoggableServiceImpl] (main) - returning: aopLogMethod(2 arguments):34
 
 ### Performance measuring
 
