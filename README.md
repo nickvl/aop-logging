@@ -16,7 +16,7 @@ The Spring AOPlogging utility provides an ability to log:
 It allows to flexible configure log message levels, provides exception handling taking into account 
 exception classes hierarchy (alike try-catch). Log annotations could be applied for both methods and classes.
 This logger is capable to log method parameters and result using reflection if the corresponding classes
-do not provide toString() method. There is an ability to log a limited amount of elements of standart collections and arrays.
+do not provide toString() method. There is an ability to log a limited amount of elements of standard collections and arrays.
 
 Quick start
 -----------
