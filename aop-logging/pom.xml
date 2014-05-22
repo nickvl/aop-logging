@@ -30,7 +30,7 @@
 
     <scm>
         <connection>scm:git:https://github.com/nickvl/aop-logging.git</connection>
-        <developerConnection>scm:git:https://github.com/nickvl/aop-logging.git</developerConnection>
+        <developerConnection>scm:git:git@github.com:nickvl/aop-logging.git</developerConnection>
         <url>https://github.com/nickvl/aop-logging.git</url>
     </scm>
     <prerequisites>
