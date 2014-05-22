@@ -8,7 +8,7 @@
     </parent>
     <groupId>com.github.nickvl</groupId>
     <artifactId>xspring-aop-logging</artifactId>
-    <version>0.3.2</version>
+    <version>0.3.3-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>NG xSpring AOP logging</name>
     <description>Declarative annotation based logging utility for Java Spring applications</description>
