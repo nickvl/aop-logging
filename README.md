@@ -22,6 +22,8 @@ Quick start
 -----------
 
 ### Add the dependency to your maven pom.xml
+**The utility is uploaded to The Maven Central Repository**
+
 
     <dependencies>
     ...
@@ -70,9 +72,9 @@ Quick start
     @EnableAspectJAutoProxy
     public class LoggerConfig {
     
-        public static final boolean SKIP_NULL_FIELDS = true;
-        public static final int CROP_THRESHOLD = 7;
-        public static final Set<String> EXCLUDE_SECURE_FIELD_NAMES = Collections.<String>emptySet();
+        private static final boolean SKIP_NULL_FIELDS = true;
+        private static final int CROP_THRESHOLD = 7;
+        private static final Set<String> EXCLUDE_SECURE_FIELD_NAMES = Collections.<String>emptySet();
     
         @Bean
         public AOPLogger getLoggerBean() {
